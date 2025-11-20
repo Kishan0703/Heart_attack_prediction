@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardiac Risk AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b1120;
+            --card-bg: #1e293b;
+            --text-color: #e2e8f0;
+            --accent-cyan: #06b6d4;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-orange: #f97316;
+            --input-bg: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        h1 {
+            color: var(--accent-cyan);
+            text-align: center;
+            grid-column: 1 / -1;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            grid-column: 1 / -1;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        h2 {
+            color: var(--accent-cyan);
+            margin-top: 0;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        input {
+            background-color: var(--input-bg);
+            border: 1px solid #475569;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
+        }
+
+        button {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, var(--accent-cyan), #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        #result-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .risk-High {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .risk-Moderate {
+            background-color: rgba(249, 115, 22, 0.2);
+            color: var(--accent-orange);
+            border: 2px solid var(--accent-orange);
+        }
+
+        .risk-Low {
+            background-color: rgba(34, 197, 94, 0.2);
+            color: var(--accent-green);
+            border: 2px solid var(--accent-green);
+        }
+
+        .interpretation {
+            background-color: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-cyan);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cardiac Risk <span style="color:white">AI Prediction</span></h1>
+    <div class="subtitle">Advanced ML biomarker analysis for Myocardial Infarction & Heart Failure risk</div>
+
+    <!-- Input Section -->
+    <div class="card">
+        <h2>Biomarker Input</h2>
+        <form id="predictionForm" class="form-grid">
+            <!-- Multiplex FRET & Electrochemical Data -->
+            <div class="form-group">
+                <label>I_620 (Intensity 620nm)</label>
+                <input type="number" step="any" name="I_620" required value="585.7">
+            </div>
+            <div class="form-group">
+                <label>I_540 (Intensity 540nm)</label>
+                <input type="number" step="any" name="I_540" required value="735.3">
+            </div>
+            <div class="form-group">
+                <label>R620 (Ratio 620)</label>
+                <input type="number" step="any" name="R620" required value="1.485">
+            </div>
+            <div class="form-group">
+                <label>R540 (Ratio 540)</label>
+                <input type="number" step="any" name="R540" required value="3.025">
+            </div>
+            <div class="form-group">
+                <label>Raw Fluorescence (a.u.)</label>
+                <input type="number" step="any" name="Raw_Fluorescence_au" required value="2149.01">
+            </div>
+            <div class="form-group">
+                <label>DeltaF (a.u.)</label>
+                <input type="number" step="any" name="DeltaF_au" required value="949.01">
+            </div>
+            <div class="form-group">
+                <label>Peak Current (µA)</label>
+                <input type="number" step="any" name="Peak_Current_uA" required value="280.74">
+            </div>
+
+            <!-- Clinical Biomarkers -->
+            <div class="form-group" style="grid-column: 1/-1; margin-top: 10px;">
+                <label style="color: var(--accent-cyan); font-weight: bold;">Clinical Biomarkers</label>
+            </div>
+            
+            <div class="form-group">
+                <label>Troponin I (ng/mL)</label>
+                <input type="number" step="any" name="cTnI_ng_mL" required value="14.35">
+            </div>
+             <div class="form-group">
+                <label>Calculated Troponin (ng/mL)</label>
+                <input type="number" step="any" name="Calculated_Troponin_ng_mL" required value="1.186">
+            </div>
+            <div class="form-group">
+                <label>Myoglobin (ng/mL)</label>
+                <input type="number" step="any" name="Myoglobin_ng_mL" required value="15.02">
+            </div>
+            <div class="form-group">
+                <label>BNP (pg/mL)</label>
+                <input type="number" step="any" name="BNP_pg_mL" required value="623.42">
+            </div>
+
+            <button type="submit" id="predictBtn">Analyze Risk</button>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card" id="result-section">
+        <h2>Analysis Result</h2>
+        
+        <div id="riskDisplay" class="risk-badge">Calculating...</div>
+        
+        <div class="interpretation">
+            <strong>Clinical Interpretation:</strong><br>
+            <span id="interpretationText">--</span>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="probChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let myChart = null;
+
+    document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('predictBtn');
+        const resultSection = document.getElementById('result-section');
+        
+        btn.textContent = "Processing...";
+        btn.disabled = true;
+
+        // Gather data
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Convert strings to floats
+        for (let key in data) {
+            data[key] = parseFloat(data[key]);
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) throw new Error("API Error");
+
+            const result = await response.json();
+            
+            // Update UI
+            resultSection.style.display = 'block';
+            
+            const riskDisplay = document.getElementById('riskDisplay');
+            riskDisplay.className = 'risk-badge risk-' + result.risk_category;
+            riskDisplay.textContent = result.risk_category + " Risk";
+            
+            document.getElementById('interpretationText').textContent = result.interpretation;
+
+            // Chart
+            const ctx = document.getElementById('probChart').getContext('2d');
+            
+            if (myChart) myChart.destroy();
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(result.probability),
+                    datasets: [{
+                        label: 'Probability',
+                        data: Object.values(result.probability),
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',   // High (Red) - Adjust order dynamically if needed
+                            'rgba(34, 197, 94, 0.7)',   // Low (Green)
+                            'rgba(249, 115, 22, 0.7)'   // Moderate (Orange)
+                        ],
+                        borderColor: [
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(249, 115, 22, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+        } catch (error) {
+            alert("Error connecting to server: " + error.message);
+        } finally {
+            btn.textContent = "Analyze Risk";
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
+
