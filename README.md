@@ -17,25 +17,71 @@ ML pipeline that classifies cardiac risk levels (Low / Moderate / High) from mul
 
 ## Setup & Run
 
-```bash
-# 1. Install dependencies
-cd /Users/kishan/projects/Heart_attack_prediction
-python3 -m pip install -r requirements.txt
+###############################################
+# 0. CREATE & ACTIVATE VIRTUAL ENVIRONMENT
+###############################################
 
-# 2. Prepare dataset where the training script expects it
-mkdir -p data
-cp -f Heart_attack_dataset.csv data/Heart_attack_dataset.csv
+# ---------- macOS ----------
+python3 -m venv venv
+source venv/bin/activate
 
-# 3. Train / refresh artifacts (pipeline.pkl, label_encoder.pkl, etc.)
+# ---------- Windows ----------
+python -m venv venv
+venv\Scripts\activate
+
+
+
+###############################################
+# 1. INSTALL DEPENDENCIES
+###############################################
+
+# macOS
+pip3 install -r requirements.txt
+
+# Windows
+pip install -r requirements.txt
+
+
+
+###############################################
+# 2. TRAIN / REFRESH ML MODEL ARTIFACTS
+###############################################
+
+# macOS
 python3 model/train.py
 
-# 4. Launch the API
+# Windows
+python model/train.py
+
+
+
+###############################################
+# 3. RUN THE FASTAPI BACKEND
+###############################################
+
+# (Same for macOS & Windows)
 uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
-# 5. (Optional) Serve the frontend from another terminal
+
+
+###############################################
+# 4. RUN THE FRONTEND (OPTIONAL)
+###############################################
+
+# macOS
 cd frontend
 python3 -m http.server 8080
-```
+
+# Windows
+cd frontend
+python -m http.server 8080
+
+# Frontend will be available at:
+# http://127.0.0.1:8080/
+
+# Backend will be available at:
+# http://127.0.0.1:8000/
+###############################################
 
 Steps 1‑4 must finish before the API can answer predictions. Step 5 is only needed if you want to load the HTML page via `http://127.0.0.1:8080/`; alternatively open `frontend/index.html` directly in a browser.
 
