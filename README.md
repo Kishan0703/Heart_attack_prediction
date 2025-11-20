@@ -17,34 +17,34 @@ ML pipeline that classifies cardiac risk levels (Low / Moderate / High) from mul
 
 ## Setup & Run
 
-# Create a virtual environment (macOS)
+## Create a virtual environment (macOS)
 python3 -m venv venv
 source venv/bin/activate
 
-# Create a virtual environment (Windows)
+## Create a virtual environment (Windows)
 python -m venv venv
 venv\Scripts\activate
 
-# Install dependencies (macOS)
+## Install dependencies (macOS)
 pip3 install -r requirements.txt
 
-# Install dependencies (Windows)
+## Install dependencies (Windows)
 pip install -r requirements.txt
 
-# Train or refresh the ML model (macOS)
+## Train or refresh the ML model (macOS)
 python3 model/train.py
 
-# Train or refresh the ML model (Windows)
+## Train or refresh the ML model (Windows)
 python model/train.py
 
-# Start the FastAPI backend on port 8000 (same for both OS)
+## Start the FastAPI backend on port 8000 (same for both OS)
 uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
-# Run the frontend using a simple local server (macOS)
+## Run the frontend using a simple local server (macOS)
 cd frontend
 python3 -m http.server 8080
 
-# Run the frontend using a simple local server (Windows)
+## Run the frontend using a simple local server (Windows)
 cd frontend
 python -m http.server 8080
 
