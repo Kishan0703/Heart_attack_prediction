@@ -875,11 +875,11 @@
         }
     };
 
-    const sampleDataBlocks = {
+  const sampleDataBlocks = {
         normal: [
             {
                 title: 'Morning Ward Set',
-                description: '10 readings | Troponin 11-19 ng/mL | BNP 330-420 pg/mL | Calm recovery pattern',
+                description: '10 readings | Troponin 11-19 | BNP 330-420 | Normal Range',
                 series: [
                     { cTnI_ng_mL: 11.8, BNP_pg_mL: 365, Myoglobin_ng_mL: 12.4, Calculated_Troponin_ng_mL: 0.94 },
                     { cTnI_ng_mL: 12.1, BNP_pg_mL: 358, Myoglobin_ng_mL: 11.9, Calculated_Troponin_ng_mL: 0.97 },
@@ -892,141 +892,78 @@
                     { cTnI_ng_mL: 19.1, BNP_pg_mL: 405, Myoglobin_ng_mL: 15.9, Calculated_Troponin_ng_mL: 1.16 },
                     { cTnI_ng_mL: 18.6, BNP_pg_mL: 399, Myoglobin_ng_mL: 15.2, Calculated_Troponin_ng_mL: 1.14 }
                 ]
-            },
-            {
-                title: 'Post-Walk Vitals',
-                description: '10 readings | Troponin 17-24 ng/mL | BNP 430-515 pg/mL | Slight exertion response',
-                series: [
-                    { cTnI_ng_mL: 17.8, BNP_pg_mL: 430, Myoglobin_ng_mL: 16.5, Calculated_Troponin_ng_mL: 1.18 },
-                    { cTnI_ng_mL: 18.2, BNP_pg_mL: 441, Myoglobin_ng_mL: 16.9, Calculated_Troponin_ng_mL: 1.21 },
-                    { cTnI_ng_mL: 19.6, BNP_pg_mL: 452, Myoglobin_ng_mL: 17.3, Calculated_Troponin_ng_mL: 1.24 },
-                    { cTnI_ng_mL: 20.3, BNP_pg_mL: 465, Myoglobin_ng_mL: 17.9, Calculated_Troponin_ng_mL: 1.28 },
-                    { cTnI_ng_mL: 21.1, BNP_pg_mL: 478, Myoglobin_ng_mL: 18.2, Calculated_Troponin_ng_mL: 1.31 },
-                    { cTnI_ng_mL: 22.4, BNP_pg_mL: 490, Myoglobin_ng_mL: 18.7, Calculated_Troponin_ng_mL: 1.35 },
-                    { cTnI_ng_mL: 23.0, BNP_pg_mL: 501, Myoglobin_ng_mL: 19.1, Calculated_Troponin_ng_mL: 1.37 },
-                    { cTnI_ng_mL: 24.2, BNP_pg_mL: 515, Myoglobin_ng_mL: 19.6, Calculated_Troponin_ng_mL: 1.41 },
-                    { cTnI_ng_mL: 23.5, BNP_pg_mL: 508, Myoglobin_ng_mL: 19.0, Calculated_Troponin_ng_mL: 1.38 },
-                    { cTnI_ng_mL: 21.9, BNP_pg_mL: 497, Myoglobin_ng_mL: 18.5, Calculated_Troponin_ng_mL: 1.33 }
-                ]
-            },
-            {
-                title: 'Evening Rest Set',
-                description: '10 readings | Troponin 13-21 ng/mL | BNP 360-455 pg/mL | Smooth wind-down',
-                series: [
-                    { cTnI_ng_mL: 13.9, BNP_pg_mL: 362, Myoglobin_ng_mL: 13.5, Calculated_Troponin_ng_mL: 1.00 },
-                    { cTnI_ng_mL: 14.4, BNP_pg_mL: 370, Myoglobin_ng_mL: 13.9, Calculated_Troponin_ng_mL: 1.02 },
-                    { cTnI_ng_mL: 15.2, BNP_pg_mL: 381, Myoglobin_ng_mL: 14.1, Calculated_Troponin_ng_mL: 1.05 },
-                    { cTnI_ng_mL: 16.6, BNP_pg_mL: 392, Myoglobin_ng_mL: 14.9, Calculated_Troponin_ng_mL: 1.09 },
-                    { cTnI_ng_mL: 17.3, BNP_pg_mL: 405, Myoglobin_ng_mL: 15.3, Calculated_Troponin_ng_mL: 1.12 },
-                    { cTnI_ng_mL: 18.7, BNP_pg_mL: 418, Myoglobin_ng_mL: 15.9, Calculated_Troponin_ng_mL: 1.16 },
-                    { cTnI_ng_mL: 19.5, BNP_pg_mL: 431, Myoglobin_ng_mL: 16.2, Calculated_Troponin_ng_mL: 1.19 },
-                    { cTnI_ng_mL: 20.4, BNP_pg_mL: 443, Myoglobin_ng_mL: 16.6, Calculated_Troponin_ng_mL: 1.23 },
-                    { cTnI_ng_mL: 21.0, BNP_pg_mL: 452, Myoglobin_ng_mL: 17.1, Calculated_Troponin_ng_mL: 1.26 },
-                    { cTnI_ng_mL: 19.8, BNP_pg_mL: 437, Myoglobin_ng_mL: 16.4, Calculated_Troponin_ng_mL: 1.21 }
-                ]
             }
         ],
         moderate: [
             {
                 title: 'Step-Up Stress Set',
-                description: '12 readings | Troponin 34-48 ng/mL | BNP 600-760 pg/mL | Borderline readings',
+                description: '12 readings | Troponin 45-55 | BNP 600-750 | Consistent Moderate Elevation',
                 series: [
-                    { cTnI_ng_mL: 34.5, BNP_pg_mL: 612, Myoglobin_ng_mL: 22.8, Calculated_Troponin_ng_mL: 1.34 },
-                    { cTnI_ng_mL: 36.2, BNP_pg_mL: 628, Myoglobin_ng_mL: 23.6, Calculated_Troponin_ng_mL: 1.38 },
-                    { cTnI_ng_mL: 37.9, BNP_pg_mL: 642, Myoglobin_ng_mL: 24.1, Calculated_Troponin_ng_mL: 1.42 },
-                    { cTnI_ng_mL: 39.4, BNP_pg_mL: 655, Myoglobin_ng_mL: 25.3, Calculated_Troponin_ng_mL: 1.48 },
-                    { cTnI_ng_mL: 41.0, BNP_pg_mL: 668, Myoglobin_ng_mL: 26.0, Calculated_Troponin_ng_mL: 1.52 },
-                    { cTnI_ng_mL: 42.3, BNP_pg_mL: 680, Myoglobin_ng_mL: 26.8, Calculated_Troponin_ng_mL: 1.56 },
-                    { cTnI_ng_mL: 43.7, BNP_pg_mL: 692, Myoglobin_ng_mL: 27.5, Calculated_Troponin_ng_mL: 1.60 },
-                    { cTnI_ng_mL: 45.1, BNP_pg_mL: 705, Myoglobin_ng_mL: 28.3, Calculated_Troponin_ng_mL: 1.66 },
-                    { cTnI_ng_mL: 46.4, BNP_pg_mL: 719, Myoglobin_ng_mL: 29.1, Calculated_Troponin_ng_mL: 1.72 },
-                    { cTnI_ng_mL: 47.8, BNP_pg_mL: 735, Myoglobin_ng_mL: 29.8, Calculated_Troponin_ng_mL: 1.78 }
+                    { cTnI_ng_mL: 45.5, BNP_pg_mL: 612, Myoglobin_ng_mL: 24.8, Calculated_Troponin_ng_mL: 1.45 },
+                    { cTnI_ng_mL: 46.2, BNP_pg_mL: 628, Myoglobin_ng_mL: 25.6, Calculated_Troponin_ng_mL: 1.48 },
+                    { cTnI_ng_mL: 47.9, BNP_pg_mL: 642, Myoglobin_ng_mL: 26.1, Calculated_Troponin_ng_mL: 1.52 },
+                    { cTnI_ng_mL: 49.4, BNP_pg_mL: 655, Myoglobin_ng_mL: 27.3, Calculated_Troponin_ng_mL: 1.58 },
+                    { cTnI_ng_mL: 51.0, BNP_pg_mL: 668, Myoglobin_ng_mL: 28.0, Calculated_Troponin_ng_mL: 1.62 },
+                    { cTnI_ng_mL: 52.3, BNP_pg_mL: 680, Myoglobin_ng_mL: 28.8, Calculated_Troponin_ng_mL: 1.66 },
+                    { cTnI_ng_mL: 53.7, BNP_pg_mL: 692, Myoglobin_ng_mL: 29.5, Calculated_Troponin_ng_mL: 1.70 },
+                    { cTnI_ng_mL: 54.1, BNP_pg_mL: 705, Myoglobin_ng_mL: 29.3, Calculated_Troponin_ng_mL: 1.72 },
+                    { cTnI_ng_mL: 52.4, BNP_pg_mL: 719, Myoglobin_ng_mL: 29.1, Calculated_Troponin_ng_mL: 1.75 },
+                    { cTnI_ng_mL: 50.8, BNP_pg_mL: 735, Myoglobin_ng_mL: 28.8, Calculated_Troponin_ng_mL: 1.70 }
                 ]
             },
             {
-                title: 'Rehab Treadmill Set',
-                description: '10 readings | Troponin 38-52 ng/mL | BNP 640-820 pg/mL | Requires monitoring',
+                title: 'Clinic Follow-up',
+                description: '10 readings | Troponin 40-50 | BNP 600+ | Warning Zone',
                 series: [
-                    { cTnI_ng_mL: 38.2, BNP_pg_mL: 645, Myoglobin_ng_mL: 23.9, Calculated_Troponin_ng_mL: 1.40 },
-                    { cTnI_ng_mL: 39.7, BNP_pg_mL: 660, Myoglobin_ng_mL: 24.6, Calculated_Troponin_ng_mL: 1.45 },
-                    { cTnI_ng_mL: 41.5, BNP_pg_mL: 675, Myoglobin_ng_mL: 25.4, Calculated_Troponin_ng_mL: 1.50 },
-                    { cTnI_ng_mL: 43.0, BNP_pg_mL: 690, Myoglobin_ng_mL: 26.1, Calculated_Troponin_ng_mL: 1.55 },
-                    { cTnI_ng_mL: 44.6, BNP_pg_mL: 704, Myoglobin_ng_mL: 26.9, Calculated_Troponin_ng_mL: 1.60 },
-                    { cTnI_ng_mL: 45.9, BNP_pg_mL: 718, Myoglobin_ng_mL: 27.6, Calculated_Troponin_ng_mL: 1.65 },
-                    { cTnI_ng_mL: 47.2, BNP_pg_mL: 732, Myoglobin_ng_mL: 28.4, Calculated_Troponin_ng_mL: 1.70 },
-                    { cTnI_ng_mL: 48.5, BNP_pg_mL: 745, Myoglobin_ng_mL: 29.0, Calculated_Troponin_ng_mL: 1.75 }
-                ]
-            },
-            {
-                title: 'Clinic Follow-up Set',
-                description: '10 readings | Troponin 32-44 ng/mL | BNP 590-710 pg/mL | Near-warning trend',
-                series: [
-                    { cTnI_ng_mL: 32.8, BNP_pg_mL: 592, Myoglobin_ng_mL: 21.4, Calculated_Troponin_ng_mL: 1.30 },
-                    { cTnI_ng_mL: 34.1, BNP_pg_mL: 605, Myoglobin_ng_mL: 22.0, Calculated_Troponin_ng_mL: 1.34 },
-                    { cTnI_ng_mL: 35.6, BNP_pg_mL: 618, Myoglobin_ng_mL: 22.7, Calculated_Troponin_ng_mL: 1.38 },
-                    { cTnI_ng_mL: 36.9, BNP_pg_mL: 631, Myoglobin_ng_mL: 23.5, Calculated_Troponin_ng_mL: 1.44 },
-                    { cTnI_ng_mL: 38.3, BNP_pg_mL: 644, Myoglobin_ng_mL: 24.2, Calculated_Troponin_ng_mL: 1.48 },
-                    { cTnI_ng_mL: 39.7, BNP_pg_mL: 657, Myoglobin_ng_mL: 24.9, Calculated_Troponin_ng_mL: 1.52 },
-                    { cTnI_ng_mL: 40.9, BNP_pg_mL: 669, Myoglobin_ng_mL: 25.6, Calculated_Troponin_ng_mL: 1.58 },
-                    { cTnI_ng_mL: 42.2, BNP_pg_mL: 683, Myoglobin_ng_mL: 26.3, Calculated_Troponin_ng_mL: 1.63 },
-                    { cTnI_ng_mL: 43.5, BNP_pg_mL: 696, Myoglobin_ng_mL: 27.0, Calculated_Troponin_ng_mL: 1.68 },
-                    { cTnI_ng_mL: 44.1, BNP_pg_mL: 702, Myoglobin_ng_mL: 27.4, Calculated_Troponin_ng_mL: 1.70 }
+                    { cTnI_ng_mL: 42.8, BNP_pg_mL: 620, Myoglobin_ng_mL: 24.4, Calculated_Troponin_ng_mL: 1.40 },
+                    { cTnI_ng_mL: 44.1, BNP_pg_mL: 635, Myoglobin_ng_mL: 25.0, Calculated_Troponin_ng_mL: 1.44 },
+                    { cTnI_ng_mL: 45.6, BNP_pg_mL: 648, Myoglobin_ng_mL: 25.7, Calculated_Troponin_ng_mL: 1.48 },
+                    { cTnI_ng_mL: 46.9, BNP_pg_mL: 661, Myoglobin_ng_mL: 26.5, Calculated_Troponin_ng_mL: 1.54 },
+                    { cTnI_ng_mL: 48.3, BNP_pg_mL: 674, Myoglobin_ng_mL: 27.2, Calculated_Troponin_ng_mL: 1.58 },
+                    { cTnI_ng_mL: 49.7, BNP_pg_mL: 687, Myoglobin_ng_mL: 27.9, Calculated_Troponin_ng_mL: 1.62 },
+                    { cTnI_ng_mL: 48.9, BNP_pg_mL: 699, Myoglobin_ng_mL: 28.6, Calculated_Troponin_ng_mL: 1.65 },
+                    { cTnI_ng_mL: 47.2, BNP_pg_mL: 683, Myoglobin_ng_mL: 27.3, Calculated_Troponin_ng_mL: 1.60 },
+                    { cTnI_ng_mL: 46.5, BNP_pg_mL: 676, Myoglobin_ng_mL: 26.0, Calculated_Troponin_ng_mL: 1.55 },
+                    { cTnI_ng_mL: 45.1, BNP_pg_mL: 662, Myoglobin_ng_mL: 25.4, Calculated_Troponin_ng_mL: 1.50 }
                 ]
             }
         ],
         high: [
             {
                 title: 'ED Triage Burst',
-                description: '10 readings | Troponin 78-115 ng/mL | BNP 950-1180 pg/mL | Acute presentation',
+                description: '10 readings | Troponin 90-130 | BNP >1000 | Critical Acute Levels',
                 series: [
-                    { cTnI_ng_mL: 85.4, BNP_pg_mL: 992, Myoglobin_ng_mL: 37.8, Calculated_Troponin_ng_mL: 2.85 },
-                    { cTnI_ng_mL: 92.7, BNP_pg_mL: 1021, Myoglobin_ng_mL: 39.1, Calculated_Troponin_ng_mL: 3.05 },
-                    { cTnI_ng_mL: 98.3, BNP_pg_mL: 1048, Myoglobin_ng_mL: 40.9, Calculated_Troponin_ng_mL: 3.28 },
-                    { cTnI_ng_mL: 103.5, BNP_pg_mL: 1074, Myoglobin_ng_mL: 42.6, Calculated_Troponin_ng_mL: 3.45 },
-                    { cTnI_ng_mL: 109.1, BNP_pg_mL: 1097, Myoglobin_ng_mL: 44.2, Calculated_Troponin_ng_mL: 3.62 },
-                    { cTnI_ng_mL: 114.6, BNP_pg_mL: 1124, Myoglobin_ng_mL: 45.9, Calculated_Troponin_ng_mL: 3.80 },
-                    { cTnI_ng_mL: 118.2, BNP_pg_mL: 1152, Myoglobin_ng_mL: 47.5, Calculated_Troponin_ng_mL: 3.95 },
-                    { cTnI_ng_mL: 122.5, BNP_pg_mL: 1181, Myoglobin_ng_mL: 49.0, Calculated_Troponin_ng_mL: 4.10 },
-                    { cTnI_ng_mL: 125.8, BNP_pg_mL: 1206, Myoglobin_ng_mL: 50.2, Calculated_Troponin_ng_mL: 4.22 },
-                    { cTnI_ng_mL: 121.9, BNP_pg_mL: 1170, Myoglobin_ng_mL: 48.6, Calculated_Troponin_ng_mL: 4.05 }
-                ]
-            },
-            {
-                title: 'Cath Lab Intake',
-                description: '12 readings | Troponin 90-132 ng/mL | BNP 1020-1260 pg/mL | Sustained critical zone',
-                series: [
-                    { cTnI_ng_mL: 95.5, BNP_pg_mL: 1040, Myoglobin_ng_mL: 39.8, Calculated_Troponin_ng_mL: 3.02 },
-                    { cTnI_ng_mL: 100.2, BNP_pg_mL: 1066, Myoglobin_ng_mL: 41.4, Calculated_Troponin_ng_mL: 3.18 },
-                    { cTnI_ng_mL: 104.6, BNP_pg_mL: 1091, Myoglobin_ng_mL: 42.7, Calculated_Troponin_ng_mL: 3.34 },
-                    { cTnI_ng_mL: 109.8, BNP_pg_mL: 1118, Myoglobin_ng_mL: 44.3, Calculated_Troponin_ng_mL: 3.50 },
-                    { cTnI_ng_mL: 114.3, BNP_pg_mL: 1147, Myoglobin_ng_mL: 45.8, Calculated_Troponin_ng_mL: 3.66 },
-                    { cTnI_ng_mL: 119.7, BNP_pg_mL: 1176, Myoglobin_ng_mL: 47.4, Calculated_Troponin_ng_mL: 3.82 },
-                    { cTnI_ng_mL: 124.8, BNP_pg_mL: 1205, Myoglobin_ng_mL: 48.9, Calculated_Troponin_ng_mL: 3.96 },
-                    { cTnI_ng_mL: 129.1, BNP_pg_mL: 1230, Myoglobin_ng_mL: 50.2, Calculated_Troponin_ng_mL: 4.10 },
-                    { cTnI_ng_mL: 133.3, BNP_pg_mL: 1252, Myoglobin_ng_mL: 51.6, Calculated_Troponin_ng_mL: 4.22 },
-                    { cTnI_ng_mL: 136.5, BNP_pg_mL: 1268, Myoglobin_ng_mL: 52.7, Calculated_Troponin_ng_mL: 4.35 },
-                    { cTnI_ng_mL: 134.2, BNP_pg_mL: 1258, Myoglobin_ng_mL: 51.9, Calculated_Troponin_ng_mL: 4.30 },
-                    { cTnI_ng_mL: 127.7, BNP_pg_mL: 1220, Myoglobin_ng_mL: 50.0, Calculated_Troponin_ng_mL: 4.05 }
+                    { cTnI_ng_mL: 95.4, BNP_pg_mL: 1050, Myoglobin_ng_mL: 55.8, Calculated_Troponin_ng_mL: 2.85 },
+                    { cTnI_ng_mL: 102.7, BNP_pg_mL: 1080, Myoglobin_ng_mL: 58.1, Calculated_Troponin_ng_mL: 3.05 },
+                    { cTnI_ng_mL: 108.3, BNP_pg_mL: 1120, Myoglobin_ng_mL: 60.9, Calculated_Troponin_ng_mL: 3.28 },
+                    { cTnI_ng_mL: 113.5, BNP_pg_mL: 1150, Myoglobin_ng_mL: 62.6, Calculated_Troponin_ng_mL: 3.45 },
+                    { cTnI_ng_mL: 119.1, BNP_pg_mL: 1180, Myoglobin_ng_mL: 64.2, Calculated_Troponin_ng_mL: 3.62 },
+                    { cTnI_ng_mL: 124.6, BNP_pg_mL: 1210, Myoglobin_ng_mL: 65.9, Calculated_Troponin_ng_mL: 3.80 },
+                    { cTnI_ng_mL: 128.2, BNP_pg_mL: 1240, Myoglobin_ng_mL: 67.5, Calculated_Troponin_ng_mL: 3.95 },
+                    { cTnI_ng_mL: 132.5, BNP_pg_mL: 1270, Myoglobin_ng_mL: 69.0, Calculated_Troponin_ng_mL: 4.10 },
+                    { cTnI_ng_mL: 135.8, BNP_pg_mL: 1290, Myoglobin_ng_mL: 70.2, Calculated_Troponin_ng_mL: 4.22 },
+                    { cTnI_ng_mL: 131.9, BNP_pg_mL: 1260, Myoglobin_ng_mL: 68.6, Calculated_Troponin_ng_mL: 4.05 }
                 ]
             },
             {
                 title: 'ICU Watch Set',
-                description: '10 readings | Troponin 85-120 ng/mL | BNP 980-1185 pg/mL | Fluctuating but severe',
+                description: '10 readings | All biomarkers significantly above High thresholds',
                 series: [
-                    { cTnI_ng_mL: 85.9, BNP_pg_mL: 986, Myoglobin_ng_mL: 34.8, Calculated_Troponin_ng_mL: 2.62 },
-                    { cTnI_ng_mL: 88.7, BNP_pg_mL: 1004, Myoglobin_ng_mL: 35.6, Calculated_Troponin_ng_mL: 2.70 },
-                    { cTnI_ng_mL: 92.4, BNP_pg_mL: 1026, Myoglobin_ng_mL: 36.9, Calculated_Troponin_ng_mL: 2.82 },
-                    { cTnI_ng_mL: 97.1, BNP_pg_mL: 1053, Myoglobin_ng_mL: 38.7, Calculated_Troponin_ng_mL: 2.95 },
-                    { cTnI_ng_mL: 101.9, BNP_pg_mL: 1081, Myoglobin_ng_mL: 40.3, Calculated_Troponin_ng_mL: 3.07 },
-                    { cTnI_ng_mL: 106.4, BNP_pg_mL: 1109, Myoglobin_ng_mL: 41.7, Calculated_Troponin_ng_mL: 3.18 },
-                    { cTnI_ng_mL: 110.7, BNP_pg_mL: 1138, Myoglobin_ng_mL: 43.2, Calculated_Troponin_ng_mL: 3.29 },
-                    { cTnI_ng_mL: 114.9, BNP_pg_mL: 1160, Myoglobin_ng_mL: 44.5, Calculated_Troponin_ng_mL: 3.38 },
-                    { cTnI_ng_mL: 118.6, BNP_pg_mL: 1178, Myoglobin_ng_mL: 45.7, Calculated_Troponin_ng_mL: 3.46 },
-                    { cTnI_ng_mL: 119.8, BNP_pg_mL: 1184, Myoglobin_ng_mL: 46.1, Calculated_Troponin_ng_mL: 3.49 }
+                    { cTnI_ng_mL: 85.9, BNP_pg_mL: 986, Myoglobin_ng_mL: 44.8, Calculated_Troponin_ng_mL: 2.62 },
+                    { cTnI_ng_mL: 88.7, BNP_pg_mL: 1004, Myoglobin_ng_mL: 45.6, Calculated_Troponin_ng_mL: 2.70 },
+                    { cTnI_ng_mL: 92.4, BNP_pg_mL: 1026, Myoglobin_ng_mL: 46.9, Calculated_Troponin_ng_mL: 2.82 },
+                    { cTnI_ng_mL: 97.1, BNP_pg_mL: 1053, Myoglobin_ng_mL: 48.7, Calculated_Troponin_ng_mL: 2.95 },
+                    { cTnI_ng_mL: 101.9, BNP_pg_mL: 1081, Myoglobin_ng_mL: 50.3, Calculated_Troponin_ng_mL: 3.07 },
+                    { cTnI_ng_mL: 106.4, BNP_pg_mL: 1109, Myoglobin_ng_mL: 51.7, Calculated_Troponin_ng_mL: 3.18 },
+                    { cTnI_ng_mL: 110.7, BNP_pg_mL: 1138, Myoglobin_ng_mL: 53.2, Calculated_Troponin_ng_mL: 3.29 },
+                    { cTnI_ng_mL: 114.9, BNP_pg_mL: 1160, Myoglobin_ng_mL: 54.5, Calculated_Troponin_ng_mL: 3.38 },
+                    { cTnI_ng_mL: 118.6, BNP_pg_mL: 1178, Myoglobin_ng_mL: 55.7, Calculated_Troponin_ng_mL: 3.46 },
+                    { cTnI_ng_mL: 119.8, BNP_pg_mL: 1184, Myoglobin_ng_mL: 56.1, Calculated_Troponin_ng_mL: 3.49 }
                 ]
             }
         ]
     };
+
 
     const fieldAliasMap = {
         ctni_ng_ml: 'cTnI_ng_mL',
@@ -1155,13 +1092,21 @@
 
     function classifyCompositeRisk(row) {
         const score =
-            valueScore(row.cTnI_ng_mL, { moderate: 30, high: 60 }) +
-            valueScore(row.BNP_pg_mL, { moderate: 500, high: 900 }) +
-            valueScore(row.Myoglobin_ng_mL, { moderate: 20, high: 35 }) +
-            valueScore(row.Calculated_Troponin_ng_mL, { moderate: 1.2, high: 2.2 });
+            // Troponin: >20 is Mod, >50 is High
+            valueScore(row.cTnI_ng_mL, { moderate: 20, high: 50 }) +
+            // BNP: >450 is Mod, >850 is High
+            valueScore(row.BNP_pg_mL, { moderate: 450, high: 850 }) +
+            // Myoglobin: >18 is Mod, >35 is High
+            valueScore(row.Myoglobin_ng_mL, { moderate: 18, high: 35 }) +
+            // Calculated Troponin: >1.2 is Mod, >1.8 is High
+            valueScore(row.Calculated_Troponin_ng_mL, { moderate: 1.2, high: 1.8 });
 
-        if (score >= 6) return 'high';
-        if (score >= 3) return 'moderate';
+        // Total Max Score = 8
+        // High Risk: Score >= 5 (Allows for mixed High/Mod signals)
+        if (score >= 5) return 'high';
+        // Moderate Risk: Score >= 2 (Allows for mild elevation in 2+ markers)
+        if (score >= 2) return 'moderate';
+        
         return 'low';
     }
 
