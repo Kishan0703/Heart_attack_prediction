@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import joblib
 import pandas as pd
@@ -8,6 +10,13 @@ import os
 
 # Initialize App
 app = FastAPI(title="Cardiac Risk Prediction API", description="Predicts Heart Attack Risk based on Biomarkers")
+
+# Serve frontend static files from the `frontend` folder
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend')
+if os.path.isdir(frontend_path):
+    # mount static files under '/static'
+    app.mount('/static', StaticFiles(directory=frontend_path), name='static')
+
 
 # CORS
 app.add_middleware(
@@ -69,6 +78,10 @@ class BiomarkerInput(BaseModel):
 
 @app.get("/")
 def root():
+    # If frontend index.html exists, serve it. Otherwise return JSON health message.
+    index_file = os.path.join(frontend_path, 'index.html')
+    if os.path.isfile(index_file):
+        return FileResponse(index_file)
     return {"message": "Cardiac Risk Prediction API is running"}
 
 @app.post("/predict")
