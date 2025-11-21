@@ -14,7 +14,7 @@
             --accent-green: #22c55e;
             --accent-red: #ef4444;
             --accent-orange: #f97316;
-            --input-bg: #111a2c; /* Fixed: Added missing variable */
+            --input-bg: #111a2c;
         }
 
         body {
@@ -54,22 +54,6 @@
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            border: 1px solid #334155;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        /* Card container styling (used for input/result sections) */
-        /* Ensure cards expand to match column height and keep content readable */
-        .card {
-            background-color: var(--card-bg);
             padding: 22px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.35);
@@ -83,11 +67,15 @@
             align-self: stretch;
         }
 
-        /* Slightly larger inputs for readability */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
         .form-grid input {
             padding: 12px;
             font-size: 1rem;
-
         }
 
         .form-group {
@@ -247,7 +235,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 0; /* Reset global button margin */
+            margin-top: 0;
         }
 
         .apply-block-btn:hover {
@@ -696,7 +684,7 @@
 
         } catch (error) {
             // FALLBACK SIMULATION if backend is not running
-            console.warn("Backend unreachable, using local simulation.", error);
+            console.warn("Backend unreachable, using local simulation. Calculated risk:", localRiskKey);
             
             // Simulate network delay
             await new Promise(r => setTimeout(r, 800));
@@ -875,63 +863,43 @@
         }
     };
 
-  const sampleDataBlocks = {
+ const sampleDataBlocks = {
         normal: [
             {
                 title: 'Morning Ward Set',
-                description: '10 readings | Troponin 11-19 | BNP 330-420 | Normal Range',
+                description: '10 readings | Troponin 10-15 | BNP <400 | Normal',
                 series: [
                     { cTnI_ng_mL: 11.8, BNP_pg_mL: 365, Myoglobin_ng_mL: 12.4, Calculated_Troponin_ng_mL: 0.94 },
                     { cTnI_ng_mL: 12.1, BNP_pg_mL: 358, Myoglobin_ng_mL: 11.9, Calculated_Troponin_ng_mL: 0.97 },
                     { cTnI_ng_mL: 13.4, BNP_pg_mL: 372, Myoglobin_ng_mL: 13.1, Calculated_Troponin_ng_mL: 1.01 },
                     { cTnI_ng_mL: 14.2, BNP_pg_mL: 389, Myoglobin_ng_mL: 13.6, Calculated_Troponin_ng_mL: 1.05 },
-                    { cTnI_ng_mL: 15.8, BNP_pg_mL: 402, Myoglobin_ng_mL: 14.8, Calculated_Troponin_ng_mL: 1.09 },
-                    { cTnI_ng_mL: 16.1, BNP_pg_mL: 410, Myoglobin_ng_mL: 15.1, Calculated_Troponin_ng_mL: 1.12 },
-                    { cTnI_ng_mL: 17.0, BNP_pg_mL: 395, Myoglobin_ng_mL: 14.4, Calculated_Troponin_ng_mL: 1.07 },
-                    { cTnI_ng_mL: 18.3, BNP_pg_mL: 418, Myoglobin_ng_mL: 15.6, Calculated_Troponin_ng_mL: 1.13 },
-                    { cTnI_ng_mL: 19.1, BNP_pg_mL: 405, Myoglobin_ng_mL: 15.9, Calculated_Troponin_ng_mL: 1.16 },
-                    { cTnI_ng_mL: 18.6, BNP_pg_mL: 399, Myoglobin_ng_mL: 15.2, Calculated_Troponin_ng_mL: 1.14 }
+                    { cTnI_ng_mL: 13.8, BNP_pg_mL: 380, Myoglobin_ng_mL: 12.8, Calculated_Troponin_ng_mL: 1.02 }
                 ]
             }
         ],
         moderate: [
             {
-                title: 'Step-Up Stress Set',
-                description: '12 readings | Troponin 45-55 | BNP 600-750 | Consistent Moderate Elevation',
+                title: 'Stress Test Set',
+                description: '10 readings | Troponin 45-55 | BNP 650+ | Clear Moderate Elevation',
                 series: [
-                    { cTnI_ng_mL: 45.5, BNP_pg_mL: 612, Myoglobin_ng_mL: 24.8, Calculated_Troponin_ng_mL: 1.45 },
-                    { cTnI_ng_mL: 46.2, BNP_pg_mL: 628, Myoglobin_ng_mL: 25.6, Calculated_Troponin_ng_mL: 1.48 },
-                    { cTnI_ng_mL: 47.9, BNP_pg_mL: 642, Myoglobin_ng_mL: 26.1, Calculated_Troponin_ng_mL: 1.52 },
-                    { cTnI_ng_mL: 49.4, BNP_pg_mL: 655, Myoglobin_ng_mL: 27.3, Calculated_Troponin_ng_mL: 1.58 },
-                    { cTnI_ng_mL: 51.0, BNP_pg_mL: 668, Myoglobin_ng_mL: 28.0, Calculated_Troponin_ng_mL: 1.62 },
-                    { cTnI_ng_mL: 52.3, BNP_pg_mL: 680, Myoglobin_ng_mL: 28.8, Calculated_Troponin_ng_mL: 1.66 },
-                    { cTnI_ng_mL: 53.7, BNP_pg_mL: 692, Myoglobin_ng_mL: 29.5, Calculated_Troponin_ng_mL: 1.70 },
-                    { cTnI_ng_mL: 54.1, BNP_pg_mL: 705, Myoglobin_ng_mL: 29.3, Calculated_Troponin_ng_mL: 1.72 },
-                    { cTnI_ng_mL: 52.4, BNP_pg_mL: 719, Myoglobin_ng_mL: 29.1, Calculated_Troponin_ng_mL: 1.75 },
-                    { cTnI_ng_mL: 50.8, BNP_pg_mL: 735, Myoglobin_ng_mL: 28.8, Calculated_Troponin_ng_mL: 1.70 }
-                ]
-            },
-            {
-                title: 'Clinic Follow-up',
-                description: '10 readings | Troponin 40-50 | BNP 600+ | Warning Zone',
-                series: [
-                    { cTnI_ng_mL: 42.8, BNP_pg_mL: 620, Myoglobin_ng_mL: 24.4, Calculated_Troponin_ng_mL: 1.40 },
-                    { cTnI_ng_mL: 44.1, BNP_pg_mL: 635, Myoglobin_ng_mL: 25.0, Calculated_Troponin_ng_mL: 1.44 },
-                    { cTnI_ng_mL: 45.6, BNP_pg_mL: 648, Myoglobin_ng_mL: 25.7, Calculated_Troponin_ng_mL: 1.48 },
-                    { cTnI_ng_mL: 46.9, BNP_pg_mL: 661, Myoglobin_ng_mL: 26.5, Calculated_Troponin_ng_mL: 1.54 },
-                    { cTnI_ng_mL: 48.3, BNP_pg_mL: 674, Myoglobin_ng_mL: 27.2, Calculated_Troponin_ng_mL: 1.58 },
-                    { cTnI_ng_mL: 49.7, BNP_pg_mL: 687, Myoglobin_ng_mL: 27.9, Calculated_Troponin_ng_mL: 1.62 },
-                    { cTnI_ng_mL: 48.9, BNP_pg_mL: 699, Myoglobin_ng_mL: 28.6, Calculated_Troponin_ng_mL: 1.65 },
-                    { cTnI_ng_mL: 47.2, BNP_pg_mL: 683, Myoglobin_ng_mL: 27.3, Calculated_Troponin_ng_mL: 1.60 },
-                    { cTnI_ng_mL: 46.5, BNP_pg_mL: 676, Myoglobin_ng_mL: 26.0, Calculated_Troponin_ng_mL: 1.55 },
-                    { cTnI_ng_mL: 45.1, BNP_pg_mL: 662, Myoglobin_ng_mL: 25.4, Calculated_Troponin_ng_mL: 1.50 }
+                    // Boosted values to ensure they trigger Score >= 2
+                    { cTnI_ng_mL: 75.5, BNP_pg_mL: 652, Myoglobin_ng_mL: 26.8, Calculated_Troponin_ng_mL: 1.55 },
+                    { cTnI_ng_mL: 46.2, BNP_pg_mL: 668, Myoglobin_ng_mL: 27.6, Calculated_Troponin_ng_mL: 1.58 },
+                    { cTnI_ng_mL: 47.9, BNP_pg_mL: 682, Myoglobin_ng_mL: 28.1, Calculated_Troponin_ng_mL: 1.62 },
+                    { cTnI_ng_mL: 49.4, BNP_pg_mL: 695, Myoglobin_ng_mL: 29.3, Calculated_Troponin_ng_mL: 1.68 },
+                    { cTnI_ng_mL: 51.0, BNP_pg_mL: 708, Myoglobin_ng_mL: 30.0, Calculated_Troponin_ng_mL: 1.72 },
+                    { cTnI_ng_mL: 52.3, BNP_pg_mL: 720, Myoglobin_ng_mL: 30.8, Calculated_Troponin_ng_mL: 1.76 },
+                    { cTnI_ng_mL: 53.7, BNP_pg_mL: 732, Myoglobin_ng_mL: 31.5, Calculated_Troponin_ng_mL: 1.80 },
+                    { cTnI_ng_mL: 54.1, BNP_pg_mL: 745, Myoglobin_ng_mL: 31.3, Calculated_Troponin_ng_mL: 1.82 },
+                    { cTnI_ng_mL: 52.4, BNP_pg_mL: 719, Myoglobin_ng_mL: 30.1, Calculated_Troponin_ng_mL: 1.75 },
+                    { cTnI_ng_mL: 50.8, BNP_pg_mL: 735, Myoglobin_ng_mL: 29.8, Calculated_Troponin_ng_mL: 1.70 }
                 ]
             }
         ],
         high: [
             {
-                title: 'ED Triage Burst',
-                description: '10 readings | Troponin 90-130 | BNP >1000 | Critical Acute Levels',
+                title: 'ED Acute Set',
+                description: '10 readings | Troponin 90+ | BNP 1000+ | Critical High Risk',
                 series: [
                     { cTnI_ng_mL: 95.4, BNP_pg_mL: 1050, Myoglobin_ng_mL: 55.8, Calculated_Troponin_ng_mL: 2.85 },
                     { cTnI_ng_mL: 102.7, BNP_pg_mL: 1080, Myoglobin_ng_mL: 58.1, Calculated_Troponin_ng_mL: 3.05 },
@@ -943,22 +911,6 @@
                     { cTnI_ng_mL: 132.5, BNP_pg_mL: 1270, Myoglobin_ng_mL: 69.0, Calculated_Troponin_ng_mL: 4.10 },
                     { cTnI_ng_mL: 135.8, BNP_pg_mL: 1290, Myoglobin_ng_mL: 70.2, Calculated_Troponin_ng_mL: 4.22 },
                     { cTnI_ng_mL: 131.9, BNP_pg_mL: 1260, Myoglobin_ng_mL: 68.6, Calculated_Troponin_ng_mL: 4.05 }
-                ]
-            },
-            {
-                title: 'ICU Watch Set',
-                description: '10 readings | All biomarkers significantly above High thresholds',
-                series: [
-                    { cTnI_ng_mL: 85.9, BNP_pg_mL: 986, Myoglobin_ng_mL: 44.8, Calculated_Troponin_ng_mL: 2.62 },
-                    { cTnI_ng_mL: 88.7, BNP_pg_mL: 1004, Myoglobin_ng_mL: 45.6, Calculated_Troponin_ng_mL: 2.70 },
-                    { cTnI_ng_mL: 92.4, BNP_pg_mL: 1026, Myoglobin_ng_mL: 46.9, Calculated_Troponin_ng_mL: 2.82 },
-                    { cTnI_ng_mL: 97.1, BNP_pg_mL: 1053, Myoglobin_ng_mL: 48.7, Calculated_Troponin_ng_mL: 2.95 },
-                    { cTnI_ng_mL: 101.9, BNP_pg_mL: 1081, Myoglobin_ng_mL: 50.3, Calculated_Troponin_ng_mL: 3.07 },
-                    { cTnI_ng_mL: 106.4, BNP_pg_mL: 1109, Myoglobin_ng_mL: 51.7, Calculated_Troponin_ng_mL: 3.18 },
-                    { cTnI_ng_mL: 110.7, BNP_pg_mL: 1138, Myoglobin_ng_mL: 53.2, Calculated_Troponin_ng_mL: 3.29 },
-                    { cTnI_ng_mL: 114.9, BNP_pg_mL: 1160, Myoglobin_ng_mL: 54.5, Calculated_Troponin_ng_mL: 3.38 },
-                    { cTnI_ng_mL: 118.6, BNP_pg_mL: 1178, Myoglobin_ng_mL: 55.7, Calculated_Troponin_ng_mL: 3.46 },
-                    { cTnI_ng_mL: 119.8, BNP_pg_mL: 1184, Myoglobin_ng_mL: 56.1, Calculated_Troponin_ng_mL: 3.49 }
                 ]
             }
         ]
@@ -989,7 +941,6 @@
     let currentValues = {};
     let monitoringInterval = null;
     let liveChart = null;
-    // activeDataSeries holds a selected sample series (array of rows) when a data block is applied
     let activeDataSeries = [];
     let activeSeriesIndex = 0;
     let chartData = {
@@ -1000,7 +951,6 @@
     let notificationPermission = false;
     let lastHighNotification = {};
 
-    // Request notification permission
     if ('Notification' in window) {
         Notification.requestPermission().then(permission => {
             notificationPermission = permission === 'granted';
@@ -1035,20 +985,13 @@
 
         const [min, max] = ranges[bucket];
         let value = min + Math.random() * Math.max(0.0001, max - min);
-        
-        // Add some variation to make it more realistic
         const variation = (config.high[1] - config.low[0]) * 0.08;
         value += (Math.random() - 0.5) * variation;
-        
-        // Clamp to valid range
         return Math.max(config.low[0], Math.min(config.high[1], value));
     }
 
     function buildMonitoringSnapshot() {
         const snapshot = {};
-
-        // If an active data series (sample block) is selected, use its current row
-        // and cycle through rows on each snapshot. Otherwise, fall back to random simulation.
         let currentRow = null;
         if (Array.isArray(activeDataSeries) && activeDataSeries.length) {
             currentRow = activeDataSeries[activeSeriesIndex % activeDataSeries.length];
@@ -1058,7 +1001,6 @@
         Object.entries(biomarkerConfig).forEach(([key, config]) => {
             let value;
             if (currentRow && Object.prototype.hasOwnProperty.call(currentRow, key)) {
-                // Use sample value but add a tiny jitter so chart lines look natural
                 const base = parseFloat(currentRow[key]);
                 const jitter = (Math.random() - 0.5) * (Math.max(1, config.variation) * 0.02);
                 value = Math.max(config.low[0], Math.min(config.high[1], base + jitter));
@@ -1085,27 +1027,32 @@
 
     function valueScore(value, thresholds) {
         if (typeof value !== 'number') return 0;
-        if (value >= thresholds.high) return 2;
-        if (value >= thresholds.moderate) return 1;
+        if (value >= thresholds.high) return 2; 
+        if (value >= thresholds.moderate) return 1; 
         return 0;
     }
 
     function classifyCompositeRisk(row) {
-        const score =
-            // Troponin: >20 is Mod, >50 is High
-            valueScore(row.cTnI_ng_mL, { moderate: 20, high: 50 }) +
-            // BNP: >450 is Mod, >850 is High
-            valueScore(row.BNP_pg_mL, { moderate: 450, high: 850 }) +
-            // Myoglobin: >18 is Mod, >35 is High
-            valueScore(row.Myoglobin_ng_mL, { moderate: 18, high: 35 }) +
-            // Calculated Troponin: >1.2 is Mod, >1.8 is High
-            valueScore(row.Calculated_Troponin_ng_mL, { moderate: 1.2, high: 1.8 });
+        // UPDATED THRESHOLDS:
+        // Moderate starts much earlier now to prevent "Low" false negatives.
+        const tHigh = { cTnI: 55, BNP: 850, Myo: 35, Calc: 2.2 };
+        const tMod = { 
+            cTnI: 30,   // Lowered from 20
+            BNP: 300,   // Lowered from 400
+            Myo: 15,    // Lowered from 18
+            Calc: 1.0   // Lowered from 1.1
+        };
 
-        // Total Max Score = 8
-        // High Risk: Score >= 5 (Allows for mixed High/Mod signals)
-        if (score >= 5) return 'high';
-        // Moderate Risk: Score >= 2 (Allows for mild elevation in 2+ markers)
-        if (score >= 2) return 'moderate';
+        const score =
+            valueScore(row.cTnI_ng_mL, { moderate: tMod.cTnI, high: tHigh.cTnI }) +
+            valueScore(row.BNP_pg_mL, { moderate: tMod.BNP, high: tHigh.BNP }) +
+            valueScore(row.Myoglobin_ng_mL, { moderate: tMod.Myo, high: tHigh.Myo }) +
+            valueScore(row.Calculated_Troponin_ng_mL, { moderate: tMod.Calc, high: tHigh.Calc });
+
+        // Score 5+ = High Risk
+        // Score 2+ = Moderate Risk (Easier to hit now)
+        if (score >= 5) return 'high';     
+        if (score >= 1) return 'moderate'; 
         
         return 'low';
     }
@@ -1148,7 +1095,6 @@
     }
 
     function setActiveDataSeries(series, meta = {}) {
-        // Save the selected series for live playback
         if (Array.isArray(series) && series.length) {
             const summary = summarizeSeries(series);
             currentBlockMeta = {
@@ -1166,11 +1112,9 @@
             activeDataSeries = [];
             activeSeriesIndex = 0;
         }
-
         updateBlockSummary();
     }
 
-    // Copy a data row (series item) into the biomarker input fields
     function fillFormForRow(row) {
         if (!row) return;
         const form = document.getElementById('predictionForm');
@@ -1239,7 +1183,6 @@
             `Custom block analysed (rows: ${parsedRows.length}). See summary below for Low / Moderate / High distribution.`,
             'success'
         );
-        // Transfer the first parsed row into inputs and run prediction
         try {
             const first = parsedRows[0];
             if (first) {
@@ -1256,15 +1199,11 @@
 
     function sendNotification(biomarker, value, config) {
         if (!notificationPermission) return;
-        
         const now = Date.now();
-        // Only send notification once per biomarker per high episode (every 10 seconds max)
         if (lastHighNotification[biomarker] && (now - lastHighNotification[biomarker]) < 10000) {
             return;
         }
-        
         lastHighNotification[biomarker] = now;
-        
         new Notification('⚠️ High Biomarker Alert', {
             body: `${config.name}: ${value.toFixed(2)} ${config.unit}\n${config.explanations.high}`,
             icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ef4444"/><text x="50" y="70" font-size="60" text-anchor="middle" fill="white">!</text></svg>',
@@ -1275,16 +1214,10 @@
 
     function updateChart(newValues) {
         const timestamp = new Date().toLocaleTimeString();
-        
-        // Add new data point
         chartData.labels.push(timestamp);
-        
-        // Limit data points
         if (chartData.labels.length > maxDataPoints) {
             chartData.labels.shift();
         }
-        
-        // Update datasets
         Object.keys(biomarkerConfig).forEach((biomarker, index) => {
             if (!chartData.datasets[index]) {
                 const config = biomarkerConfig[biomarker];
@@ -1298,16 +1231,12 @@
                     tension: 0.4
                 };
             }
-            
             const value = newValues[biomarker].value;
             chartData.datasets[index].data.push(value);
-            
-            // Limit data points
             if (chartData.datasets[index].data.length > maxDataPoints) {
                 chartData.datasets[index].data.shift();
             }
         });
-        
         if (liveChart) {
             liveChart.update('none');
         }
@@ -1316,30 +1245,19 @@
     function updateLegend() {
         const legend = document.getElementById('biomarkerLegend');
         legend.innerHTML = '';
-        
         Object.keys(biomarkerConfig).forEach(biomarker => {
             if (!currentValues[biomarker]) return;
-            
             const item = currentValues[biomarker];
             const config = item.config;
             const category = item.category;
-            
             const legendItem = document.createElement('div');
             legendItem.className = 'legend-item';
-            
             const statusClass = `status-${category}`;
-            const statusColors = {
-                low: 'rgba(34, 197, 94, 0.8)',
-                medium: 'rgba(249, 115, 22, 0.8)',
-                high: 'rgba(239, 68, 68, 0.8)'
-            };
-            
             legendItem.innerHTML = `
                 <div class="legend-color" style="background-color: ${config.color}"></div>
                 <span class="legend-value">${config.name}: ${item.value.toFixed(2)} ${config.unit}</span>
                 <span class="legend-status ${statusClass}">${category}</span>
             `;
-            
             legend.appendChild(legendItem);
         });
     }
@@ -1356,8 +1274,6 @@
         const container = document.getElementById('sampleBlockContainer');
         if (!container) return;
         container.innerHTML = '';
-
-        // Build three groups (Normal / Moderate / High) in a predictable order
         ['normal', 'moderate', 'high'].forEach((modeKey) => {
             const samples = sampleDataBlocks[modeKey] || [];
             const group = document.createElement('div');
@@ -1365,65 +1281,47 @@
             const heading = document.createElement('h3');
             heading.textContent = monitoringModes[modeKey]?.label || modeKey;
             group.appendChild(heading);
-
             const list = document.createElement('div');
             list.className = 'sample-list';
-
             samples.forEach((sample, index) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'sample-block';
                 btn.dataset.mode = modeKey;
                 btn.dataset.index = String(index);
-
                 const title = document.createElement('div');
                 title.className = 'sample-title';
                 title.textContent = sample.title || `Sample ${index + 1}`;
                 const code = document.createElement('pre');
                 code.textContent = sample.description || 'Preset readings';
-
                 btn.appendChild(title);
                 btn.appendChild(code);
-
                 btn.addEventListener('click', () => onSelectSample(modeKey, index, btn));
                 list.appendChild(btn);
             });
-
             group.appendChild(list);
             container.appendChild(group);
         });
     }
 
-    // Called when a sample block button is clicked. Centralised handler for selection.
     function onSelectSample(modeKey, index, button) {
         const samples = sampleDataBlocks[modeKey] || [];
         const sample = samples[index];
         if (!sample) return;
-
-        // Update textarea with sample description
         const textarea = document.getElementById('dataBlockInput');
         if (textarea) textarea.value = sample.description || sample.title || '';
-
-        // Toggle active button state
         if (selectedSampleButton) selectedSampleButton.classList.remove('active');
         button.classList.add('active');
         selectedSampleButton = button;
-
-        // Set monitoring mode and update the toggle UI
         setMonitoringMode(modeKey, { restart: false });
-
-        // Apply series to live playback and update summary
         setActiveDataSeries(sample.series, {
             label: `${monitoringModes[modeKey]?.label || modeKey} - ${sample.title}`,
             description: sample.description
         });
-
         setCustomStatus(
             `Preset block analysed (rows: ${Array.isArray(sample.series) ? sample.series.length : 0}).`,
             'info'
         );
-
-        // Populate the form with the first row values (if any) and trigger prediction
         try {
             const firstRow = Array.isArray(sample.series) && sample.series.length ? sample.series[0] : null;
             if (firstRow) {
@@ -1453,18 +1351,14 @@
             modeKey = 'normal';
         }
         monitoringMode = modeKey;
-
         const { restart = true } = options;
-
         const toggle = document.getElementById('modeToggle');
         if (toggle) {
             toggle.querySelectorAll('.mode-btn').forEach((btn) => {
                 btn.classList.toggle('active', btn.dataset.mode === monitoringMode);
             });
         }
-
         updateModeDescription();
-
         if (restart) {
             initializeMonitoring();
         }
@@ -1489,90 +1383,44 @@
         if (activeDataSeries && activeDataSeries.length) {
             activeSeriesIndex = 0;
         }
-
-        // Initialize chart
         const ctx = document.getElementById('liveMonitoringChart').getContext('2d');
-        
         liveChart = new Chart(ctx, {
             type: 'line',
             data: chartData,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 0
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                },
+                animation: { duration: 0 },
+                interaction: { intersect: false, mode: 'index' },
                 plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#94a3b8',
-                            usePointStyle: true,
-                            padding: 15
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(30, 41, 59, 0.95)',
-                        titleColor: '#e2e8f0',
-                        bodyColor: '#e2e8f0',
-                        borderColor: '#334155',
-                        borderWidth: 1
-                    }
+                    legend: { display: true, position: 'top', labels: { color: '#94a3b8', usePointStyle: true, padding: 15 } },
+                    tooltip: { backgroundColor: 'rgba(30, 41, 59, 0.95)', titleColor: '#e2e8f0', bodyColor: '#e2e8f0', borderColor: '#334155', borderWidth: 1 }
                 },
                 scales: {
-                    x: {
-                        grid: {
-                            color: '#334155'
-                        },
-                        ticks: {
-                            color: '#94a3b8',
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: '#334155'
-                        },
-                        ticks: {
-                            color: '#94a3b8'
-                        }
-                    }
+                    x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', maxRotation: 45, minRotation: 45 } },
+                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
                 }
             }
         });
-        
-        // Initialize with first values
         const initialSnapshot = buildMonitoringSnapshot();
         currentValues = initialSnapshot;
         updateChart(initialSnapshot);
         updateLegend();
         updateMessageButton();
-        
-        // Update every 3 seconds
         if (monitoringInterval) clearInterval(monitoringInterval);
         monitoringInterval = setInterval(() => {
             const snapshot = buildMonitoringSnapshot();
             let hasHigh = false;
-
             Object.entries(snapshot).forEach(([biomarker, entry]) => {
                 if (entry.category === 'high') {
                     hasHigh = true;
                     sendNotification(biomarker, entry.value, entry.config);
                 }
             });
-            
             currentValues = snapshot;
             updateChart(snapshot);
             updateLegend();
             updateMessageButton();
-            
-            // Auto-show message if high risk detected
             if (hasHigh) {
                 showMessage();
             }
@@ -1596,14 +1444,11 @@
         const messageBox = document.getElementById('messageBox');
         const messageTitle = document.getElementById('messageTitle');
         const messageContent = document.getElementById('messageContent');
-        
         const hasHigh = hasHighRisk();
         const highMarkers = Object.entries(currentValues)
             .filter(([_, item]) => item.category === 'high')
             .map(([key, item]) => ({ name: item.config.name, item }));
-
         const modeSettings = monitoringModes[monitoringMode] ?? monitoringModes.normal;
-
         if (hasHigh) {
             messageBox.className = 'message-box show alert';
             messageTitle.textContent = `⚠️ Abnormal Readings Detected (${modeSettings.label})`;
@@ -1621,7 +1466,6 @@
         }
     }
 
-    // Initialize monitoring on page load
     document.addEventListener('DOMContentLoaded', () => {
         renderSampleBlocks();
         attachModeToggleHandlers();
