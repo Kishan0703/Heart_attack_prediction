@@ -94,8 +94,18 @@ def predict(data: BiomarkerInput):
         
         # Get Probabilities
         probs = pipeline.predict_proba(df_input)[0]
-        # Map probabilities to classes
-        class_probs = {label_encoder.inverse_transform([i])[0]: float(prob) for i, prob in enumerate(probs)}
+        # Map probabilities to class labels using the classifier's classes_ ordering
+        try:
+            clf_classes = pipeline.named_steps['classifier'].classes_
+        except Exception:
+            # Fallback: assume classes are 0..n-1
+            clf_classes = list(range(len(probs)))
+
+        class_probs = {}
+        for idx, cls in enumerate(clf_classes):
+            # cls is the encoded class value used by the classifier (e.g., 0,1,2)
+            label = label_encoder.inverse_transform([int(cls)])[0]
+            class_probs[label] = float(probs[idx])
         
         # Interpretation logic (simplified rule-based explanation alongside ML)
         interpretation = []
