@@ -1,6 +1,6 @@
-def main():
-    print("Hello from heart-attack-prediction!")
-
+import uvicorn
+import os
 
 if __name__ == "__main__":
-    main()
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
