@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardiac Risk AI</title>
+    <title>Cardiac Risk AI Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -15,1469 +15,518 @@
             --accent-red: #ef4444;
             --accent-orange: #f97316;
             --input-bg: #111a2c;
+            --border-color: #334155;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+            line-height: 1.5;
         }
 
-        h1, h2, h3 {
-            margin-top: 0;
+        @media (min-width: 768px) {
+            body { padding: 20px; }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 1fr;
             gap: 20px;
-            align-items: start;
         }
 
-        .subtitle {
-            grid-column: 1 / -1;
-            text-align: center;
-            color: #94a3b8;
-            margin-bottom: 20px;
+        @media (min-width: 1024px) {
+            .container {
+                grid-template-columns: 350px 1fr;
+            }
+            .header-area { grid-column: 1 / -1; }
+            .bottom-area { grid-column: 1 / -1; }
         }
 
-        h1 {
-            grid-column: 1 / -1;
+        .header-area {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
+
+        h1 { font-size: 1.8rem; margin-bottom: 5px; color: white; }
+        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; }
 
         .card {
             background-color: var(--card-bg);
-            padding: 22px;
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-            border: 1px solid #334155;
-            width: 100%;
-            box-sizing: border-box;
-            min-height: 420px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-self: stretch;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            height: fit-content;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
 
-        .form-grid input {
-            padding: 12px;
-            font-size: 1rem;
+        @media (min-width: 480px) and (max-width: 1023px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .form-group-full { grid-column: 1 / -1; }
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #cbd5e1;
-        }
-
+        .form-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 4px; font-size: 0.8rem; color: #cbd5e1; font-weight: 500; }
+        
         input {
             background-color: var(--input-bg);
             border: 1px solid #475569;
             color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.2s;
         }
 
-        input:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
-        }
+        input:focus { border-color: var(--accent-cyan); ring: 2px var(--accent-cyan); }
+        input:invalid { border-color: var(--accent-red); }
 
-        button {
-            grid-column: 1 / -1;
-            background: linear-gradient(45deg, var(--accent-cyan), #3b82f6);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #3b82f6);
             color: white;
             border: none;
-            padding: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: 6px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
-        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        #result-section {
+        /* Spinner */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
             display: none;
-            animation: fadeIn 0.5s ease-in;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Results Area */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 1200px) {
+            .results-grid { grid-template-columns: 1fr 1.2fr; }
         }
 
         .risk-badge {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
-            box-sizing: border-box;
-        }
-
-        .risk-High {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: var(--accent-red);
-            border: 2px solid var(--accent-red);
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-        }
-
-        .risk-Moderate {
-            background-color: rgba(249, 115, 22, 0.2);
-            color: var(--accent-orange);
-            border: 2px solid var(--accent-orange);
-        }
-
-        .risk-Low {
-            background-color: rgba(34, 197, 94, 0.2);
-            color: var(--accent-green);
-            border: 2px solid var(--accent-green);
-        }
-
-        .interpretation {
-            background-color: #334155;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-cyan);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 340px;
-            width: 100%;
-        }
-
-        /* Data block selector */
-        .data-block-section {
-            grid-column: 1 / -1;
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
-            margin-top: 10px;
-        }
-
-        .data-block-section p {
-            color: #94a3b8;
-            line-height: 1.5;
-            margin-top: 0;
-        }
-
-        .data-block-input {
-            width: 100%;
-            background-color: #111a2c;
-            border: 1px solid #334155;
-            color: var(--text-color);
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Fira Code', 'SFMono-Regular', Consolas, monospace;
-            font-size: 0.9rem;
-            resize: vertical;
-            min-height: 110px;
-            max-height: 180px;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-        }
-
-        .data-block-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .apply-block-btn {
-            background: linear-gradient(45deg, var(--accent-cyan), #3b82f6);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 0;
-        }
-
-        .apply-block-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
-        }
-
-        .custom-status {
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-
-        .custom-status.info { color: #94a3b8; }
-        .custom-status.success { color: var(--accent-green); }
-        .custom-status.error { color: var(--accent-red); }
-
-        .block-summary {
-            background-color: #111a2c;
-            border: 1px solid #1f2a3a;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .block-summary__title {
-            font-weight: 600;
-            color: var(--accent-cyan);
-            margin: 0 0 6px;
-        }
-
-        .block-summary__desc {
-            margin: 0;
-            color: #cbd5e1;
-            font-size: 0.9rem;
-        }
-
-        .block-summary__footer {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-
-        .summary-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .summary-chip {
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .summary-chip.status-high { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-        .summary-chip.status-moderate { background-color: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
-        .summary-chip.status-low { background-color: rgba(34, 197, 94, 0.2); color: var(--accent-green); }
-
-        .mode-toggle {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            min-width: 120px;
-            background-color: #1e293b;
-            color: var(--text-color);
-            border: 1px solid #334155;
-            padding: 10px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            margin-top: 0;
-        }
-
-        .mode-btn.active {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
-            color: var(--accent-cyan);
-        }
-
-        .mode-description {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
-        .sample-groups {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-        }
-
-        .sample-group {
-            background-color: #111a2c;
-            border: 1px solid #1f2a3a;
-            border-radius: 12px;
-            padding: 15px;
-        }
-
-        .sample-group h3 {
-            margin: 0 0 10px;
-            font-size: 1rem;
-            color: var(--accent-cyan);
-        }
-
-        .sample-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .sample-block {
-            text-align: left;
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            color: #cbd5e1;
-            border-radius: 10px;
-            padding: 10px;
-            font-family: 'Fira Code', 'SFMono-Regular', Consolas, monospace;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            width: 100%;
-            margin-top: 0;
-        }
-
-        .sample-title {
-            font-weight: 600;
-            color: var(--accent-cyan);
-            font-size: 0.85rem;
-        }
-
-        .sample-block pre {
-            margin: 6px 0 0;
-            font-size: 0.75rem;
-            line-height: 1.4;
-            white-space: pre-wrap;
-            color: #e2e8f0;
-        }
-
-        .sample-block:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
-        }
-
-        .sample-block.active {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
-        }
-
-        /* Continuous Monitoring Section */
-        .monitoring-section {
-            grid-column: 1 / -1;
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
-            position: relative;
-            animation: glowPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(6, 182, 212, 0.2); }
-            50% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 30px rgba(6, 182, 212, 0.4); }
-        }
-
-        .monitoring-chart-container {
-            position: relative;
-            height: 420px;
-            width: 100%;
-            margin-bottom: 20px;
-            background-color: #1a2332;
-            border-radius: 10px;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1100px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            .card { min-height: auto; }
-            .chart-container { height: 260px; }
-            .monitoring-chart-container { height: 300px; }
-        }
-
-        .biomarker-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-            justify-content: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background-color: #334155;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        .legend-value {
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .legend-status {
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 1.4rem;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
         }
+        .risk-High { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .risk-Moderate { background: rgba(249, 115, 22, 0.1); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+        .risk-Low { background: rgba(34, 197, 94, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); }
 
-        .message-button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .message-button {
-            background: linear-gradient(45deg, var(--accent-cyan), #3b82f6);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
+        .interpretation-box {
+            background: #0f172a;
+            padding: 15px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 0;
-        }
-
-        .message-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
-        }
-
-        .message-button.alert {
-            background: linear-gradient(45deg, var(--accent-red), #dc2626);
-            animation: buttonPulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes buttonPulse {
-            0%, 100% { box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
-            50% { box-shadow: 0 5px 25px rgba(239, 68, 68, 0.7); }
-        }
-
-        .message-box {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #334155;
-            border-radius: 10px;
             border-left: 4px solid var(--accent-cyan);
-            display: none;
-            animation: fadeIn 0.5s ease-in;
+            font-size: 0.9rem;
         }
 
-        .message-box.show { display: block; }
-        .message-box.alert { border-left-color: var(--accent-red); background-color: rgba(239, 68, 68, 0.1); }
-        .message-box.safe { border-left-color: var(--accent-green); background-color: rgba(34, 197, 94, 0.1); }
+        .chart-container { height: 250px; margin-top: 15px; }
 
-        .message-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--accent-cyan);
+        /* History Table */
+        .history-card { margin-top: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); color: #94a3b8; }
+        td { padding: 10px; border-bottom: 1px solid #1e293b; }
+        .status-pill { padding: 2px 8px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; }
+
+        /* Monitoring Section */
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        @media (min-width: 1024px) {
+            .monitoring-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        .message-box.alert .message-title { color: var(--accent-red); }
-        .message-box.safe .message-title { color: var(--accent-green); }
-        .message-content { line-height: 1.6; color: var(--text-color); }
+        .live-chart-container { height: 350px; background: #0f172a; border-radius: 8px; padding: 10px; }
+        
+        /* Helper classes */
+        .hidden { display: none; }
+        .mt-20 { margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1><span style="color:white">LOC-Cardiac Risk Prediction</span></h1>
-    <div class="subtitle">Advanced ML biomarker analysis for Myocardial Infarction & Heart Failure risk</div>
+    <header class="header-area">
+        <h1>Cardiac Risk Prediction AI</h1>
+        <p class="subtitle">Clinical Biomarker Analysis & Real-time Monitoring</p>
+    </header>
 
-    <div class="card">
-        <h2>Biomarker Input</h2>
-        <form id="predictionForm" class="form-grid">
-            <div class="form-group">
-                <label>I_620 (Intensity 620nm)</label>
-                <input type="number" step="any" name="I_620" required value="585.7">
-            </div>
-            <div class="form-group">
-                <label>I_540 (Intensity 540nm)</label>
-                <input type="number" step="any" name="I_540" required value="735.3">
-            </div>
-            <div class="form-group">
-                <label>R620 (Ratio 620)</label>
-                <input type="number" step="any" name="R620" required value="1.485">
-            </div>
-            <div class="form-group">
-                <label>R540 (Ratio 540)</label>
-                <input type="number" step="any" name="R540" required value="3.025">
-            </div>
-            <div class="form-group">
-                <label>Raw Fluorescence (a.u.)</label>
-                <input type="number" step="any" name="Raw_Fluorescence_au" required value="2149.01">
-            </div>
-            <div class="form-group">
-                <label>DeltaF (a.u.)</label>
-                <input type="number" step="any" name="DeltaF_au" required value="949.01">
-            </div>
-            <div class="form-group">
-                <label>Peak Current (µA)</label>
-                <input type="number" step="any" name="Peak_Current_uA" required value="280.74">
-            </div>
+    <!-- Sidebar: Input Form -->
+    <aside>
+        <div class="card">
+            <h2 style="font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Biomarker Input
+            </h2>
+            <form id="predictionForm" class="form-grid">
+                <div class="form-group">
+                    <label>Troponin I (0-500 ng/mL)</label>
+                    <input type="number" step="0.01" name="cTnI_ng_mL" required min="0" max="500" value="14.35">
+                </div>
+                <div class="form-group">
+                    <label>BNP (0-10000 pg/mL)</label>
+                    <input type="number" step="1" name="BNP_pg_mL" required min="0" max="10000" value="623">
+                </div>
+                <div class="form-group">
+                    <label>Myoglobin (0-1000 ng/mL)</label>
+                    <input type="number" step="0.1" name="Myoglobin_ng_mL" required min="0" max="1000" value="15.0">
+                </div>
+                <div class="form-group">
+                    <label>Peak Current (0-5000 µA)</label>
+                    <input type="number" step="0.1" name="Peak_Current_uA" required min="0" max="5000" value="280.7">
+                </div>
+                
+                <details style="grid-column: 1/-1; margin-top: 5px;">
+                    <summary style="cursor: pointer; color: var(--accent-cyan); font-size: 0.85rem; font-weight: 600;">Advanced Parameters</summary>
+                    <div class="form-grid" style="padding-top: 10px;">
+                        <div class="form-group"><label>I_620</label><input type="number" step="0.1" name="I_620" value="585.7"></div>
+                        <div class="form-group"><label>I_540</label><input type="number" step="0.1" name="I_540" value="735.3"></div>
+                        <div class="form-group"><label>R620</label><input type="number" step="0.001" name="R620" value="1.485"></div>
+                        <div class="form-group"><label>R540</label><input type="number" step="0.001" name="R540" value="3.025"></div>
+                        <div class="form-group"><label>Raw Fluor.</label><input type="number" step="0.1" name="Raw_Fluorescence_au" value="2149.0"></div>
+                        <div class="form-group"><label>DeltaF</label><input type="number" step="0.1" name="DeltaF_au" value="949.0"></div>
+                        <div class="form-group"><label>Calc Trop.</label><input type="number" step="0.001" name="Calculated_Troponin_ng_mL" value="1.186"></div>
+                    </div>
+                </details>
 
-            <div class="form-group" style="grid-column: 1/-1; margin-top: 10px;">
-                <label style="color: var(--accent-cyan); font-weight: bold;">Clinical Biomarkers</label>
+                <button type="submit" id="predictBtn" class="btn-primary">
+                    <span class="spinner" id="btnSpinner"></span>
+                    <span id="btnText">Analyze Risk</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="card mt-20 history-card">
+            <h3 style="font-size: 1rem; margin-bottom: 12px;">Recent History</h3>
+            <table id="historyTable">
+                <thead><tr><th>Time</th><th>Risk</th><th>Conf.</th></tr></thead>
+                <tbody id="historyBody">
+                    <tr><td colspan="3" style="text-align:center; color: #64748b; padding: 20px;">No predictions yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </aside>
+
+    <!-- Main Content: Results & Monitoring -->
+    <main>
+        <div id="result-section" class="hidden">
+            <div class="results-grid">
+                <div class="card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Latest Analysis</h2>
+                    <div id="riskBadge" class="risk-badge">Low Risk</div>
+                    <div class="interpretation-box">
+                        <strong style="color: var(--accent-cyan)">Clinical Insight:</strong><br>
+                        <span id="interpretationText">--</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px;">Probability Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="probChart"></canvas>
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label>Troponin I (ng/mL)</label>
-                <input type="number" step="any" name="cTnI_ng_mL" required value="14.35">
+            <div class="card mt-20" id="explanationCard" class="hidden">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Top SHAP Features (Explanation)</h3>
+                <div id="shapList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                    <!-- SHAP features will be injected here -->
+                </div>
             </div>
-             <div class="form-group">
-                <label>Calculated Troponin (ng/mL)</label>
-                <input type="number" step="any" name="Calculated_Troponin_ng_mL" required value="1.186">
-            </div>
-            <div class="form-group">
-                <label>Myoglobin (ng/mL)</label>
-                <input type="number" step="any" name="Myoglobin_ng_mL" required value="15.02">
-            </div>
-            <div class="form-group">
-                <label>BNP (pg/mL)</label>
-                <input type="number" step="any" name="BNP_pg_mL" required value="623.42">
-            </div>
-
-            <button type="submit" id="predictBtn">Analyze Risk</button>
-        </form>
-    </div>
-
-    <div class="card" id="result-section">
-        <h2>Analysis Result</h2>
-        
-        <div id="riskDisplay" class="risk-badge">Calculating...</div>
-        
-        <div class="interpretation">
-            <strong>Clinical Interpretation:</strong><br>
-            <span id="interpretationText">--</span>
         </div>
 
-        <div class="chart-container">
-            <canvas id="probChart"></canvas>
-        </div>
-    </div>
-
-    <div class="data-block-section">
-        <h2>Input Data Block</h2>
-        <p>Paste or type a block of readings (JSON/CSV snippets are fine) or pick one of the curated blocks below. Choosing a block updates the live monitoring bias so the simulation mirrors Normal, Moderate, or High-risk behavior.</p>
-        <textarea id="dataBlockInput" class="data-block-input" placeholder="# Optional note about this batch&#10;Add your own readings or pick a preset below..."></textarea>
-        <div class="data-block-actions">
-            <button type="button" class="apply-block-btn" id="applyCustomBlockBtn">Use Custom Block</button>
-            <span class="custom-status" id="customBlockStatus">Paste readings or choose a sample block.</span>
-        </div>
-        <div class="block-summary" id="blockSummary">
-            <p class="block-summary__desc">No data block selected. Live monitoring is running in random mode.</p>
-        </div>
-        <div class="mode-toggle" id="modeToggle">
-            <button type="button" class="mode-btn active" data-mode="normal">Normal Mode</button>
-            <button type="button" class="mode-btn" data-mode="moderate">Moderate Mode</button>
-            <button type="button" class="mode-btn" data-mode="high">High-risk Mode</button>
-        </div>
-        <div class="mode-description" id="modeDescription"></div>
-        <div class="sample-groups" id="sampleBlockContainer"></div>
-    </div>
-
-    <div class="monitoring-section">
-        <h2>Live Biomarker Monitoring</h2>
-        <div class="biomarker-legend" id="biomarkerLegend">
+        <div class="monitoring-grid">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 1.1rem; margin: 0;">Live Monitoring</h2>
+                    <select id="monitoringMode" style="background: #0f172a; color: white; border: 1px solid #334155; padding: 4px; border-radius: 4px; font-size: 0.8rem;">
+                        <option value="normal">Normal Mode</option>
+                        <option value="moderate">Moderate Mode</option>
+                        <option value="high">High-risk Mode</option>
+                    </select>
+                </div>
+                <div class="live-chart-container">
+                    <canvas id="liveChart"></canvas>
+                </div>
             </div>
-        <div class="monitoring-chart-container">
-            <canvas id="liveMonitoringChart"></canvas>
+            
+            <div class="card">
+                <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Clinical Reference Blocks</h2>
+                <div id="sampleBlocks" style="display: grid; gap: 10px;">
+                    <!-- Samples injected here -->
+                </div>
+            </div>
         </div>
-        <div class="message-button-container">
-            <button class="message-button" id="showMessageBtn">Show Message</button>
-        </div>
-        <div class="message-box" id="messageBox">
-            <div class="message-title" id="messageTitle">Status Update</div>
-            <div class="message-content" id="messageContent"></div>
-        </div>
-    </div>
+    </main>
 </div>
 
 <script>
-    let myChart = null;
+    // Configuration & State
+    let probChart = null;
+    let liveChart = null;
+    let predictionHistory = [];
+    const API_KEY = "your_key_here"; // In production, this would be managed more securely
+    const BACKEND_URL = ""; // Current host
 
+    // Biomarker Config for Simulation
+    const config = {
+        cTnI_ng_mL: { name: 'Troponin I', unit: 'ng/mL', color: '#06b6d4', ranges: { normal: [10, 20], moderate: [30, 60], high: [80, 150] } },
+        BNP_pg_mL: { name: 'BNP', unit: 'pg/mL', color: '#f97316', ranges: { normal: [200, 400], moderate: [500, 900], high: [1000, 1500] } },
+        Myoglobin_ng_mL: { name: 'Myoglobin', unit: 'ng/mL', color: '#22c55e', ranges: { normal: [5, 15], moderate: [20, 40], high: [50, 100] } }
+    };
+
+    const samples = [
+        { title: "Normal Recovery", mode: "normal", data: { cTnI_ng_mL: 12.5, BNP_pg_mL: 320, Myoglobin_ng_mL: 10.2, Peak_Current_uA: 250 } },
+        { title: "Borderline Stress", mode: "moderate", data: { cTnI_ng_mL: 42.1, BNP_pg_mL: 680, Myoglobin_ng_mL: 25.5, Peak_Current_uA: 310 } },
+        { title: "Acute ED Entry", mode: "high", data: { cTnI_ng_mL: 115.8, BNP_pg_mL: 1240, Myoglobin_ng_mL: 68.2, Peak_Current_uA: 420 } }
+    ];
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        initLiveChart();
+        initSamples();
+        startMonitoring();
+    });
+
+    // Form Handling
     document.getElementById('predictionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const btn = document.getElementById('predictBtn');
-        const resultSection = document.getElementById('result-section');
-        
-        btn.textContent = "Processing...";
-        btn.disabled = true;
+        setLoading(true);
 
-        // Gather data
         const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        
-        // Convert strings to floats
-        for (let key in data) {
-            data[key] = parseFloat(data[key]);
-        }
-
-        // Compute a local risk estimate immediately (synchronous logic)
-        const localRiskKey = classifyCompositeRisk(data); 
-        const localRiskLabel = localRiskKey.charAt(0).toUpperCase() + localRiskKey.slice(1);
-
-        let result;
+        const payload = {};
+        formData.forEach((value, key) => payload[key] = parseFloat(value));
 
         try {
-            // Attempt to fetch from backend
-            const response = await fetch('/predict', {
+            const response = await fetch(`${BACKEND_URL}/predict`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-API-Key': API_KEY 
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
 
-            if (!response.ok) throw new Error("API Error");
-            result = await response.json();
+            if (!response.ok) throw new Error("API request failed");
+            
+            const result = await response.json();
+            renderResult(result);
+            addToHistory(result);
+            
+            // Try to get explanation
+            if (result.prediction_id) {
+                fetchExplanation(result.prediction_id);
+            }
 
         } catch (error) {
-            // FALLBACK SIMULATION if backend is not running
-            console.warn("Backend unreachable, using local simulation. Calculated risk:", localRiskKey);
-            
-            // Simulate network delay
-            await new Promise(r => setTimeout(r, 800));
-
-            // Mock probabilities based on the local risk key
-            let probs = { Low: 0.1, Moderate: 0.1, High: 0.1 };
-            if (localRiskKey === 'high') probs = { Low: 0.05, Moderate: 0.20, High: 0.75 };
-            else if (localRiskKey === 'moderate') probs = { Low: 0.20, Moderate: 0.60, High: 0.20 };
-            else probs = { Low: 0.80, Moderate: 0.15, High: 0.05 };
-
-            result = {
-                risk_category: localRiskLabel,
-                confidence: 0.88, // Mock confidence
-                probability: probs,
-                interpretation: "Based on the biomarker analysis, the estimated risk level is: "
-            };
+            console.error(error);
+            alert("Error connecting to prediction server. Please ensure backend is running.");
         } finally {
-            // Render Logic (Runs for both Real and Simulated data)
-            resultSection.style.display = 'block';
-
-            const riskDisplay = document.getElementById('riskDisplay');
-            riskDisplay.className = 'risk-badge risk-' + result.risk_category;
-            riskDisplay.textContent = result.risk_category + " Risk";
-
-            // Show interpretation
-            const interpEl = document.getElementById('interpretationText');
-            interpEl.textContent = result.interpretation;
-            const modelSummary = ` Model prediction: ${result.risk_category} (confidence: ${(result.confidence*100).toFixed(1)}%).`;
-            interpEl.textContent += modelSummary;
-
-            // Chart
-            const ctx = document.getElementById('probChart').getContext('2d');
-
-            if (myChart) myChart.destroy();
-
-            const probLabels = Object.keys(result.probability);
-            const probData = probLabels.map(k => result.probability[k]);
-
-            const colorMap = {
-                'High': 'rgba(239, 68, 68, 0.7)',
-                'Moderate': 'rgba(249, 115, 22, 0.7)',
-                'Low': 'rgba(34, 197, 94, 0.7)',
-            };
-            const borderColorMap = {
-                'High': 'rgba(239, 68, 68, 1)',
-                'Moderate': 'rgba(249, 115, 22, 1)',
-                'Low': 'rgba(34, 197, 94, 1)'
-            };
-
-            const bgColors = probLabels.map(l => colorMap[l] ?? 'rgba(99,102,241,0.7)');
-            const bdColors = probLabels.map(l => borderColorMap[l] ?? 'rgba(99,102,241,1)');
-
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: probLabels,
-                    datasets: [{
-                        label: 'Probability',
-                        data: probData,
-                        backgroundColor: bgColors,
-                        borderColor: bdColors,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 1,
-                            grid: { color: '#334155' },
-                            ticks: { color: '#94a3b8' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#94a3b8' }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-
-            btn.textContent = "Analyze Risk";
-            btn.disabled = false;
+            setLoading(false);
         }
     });
 
-    // Continuous Monitoring System with Live Chart
-    const biomarkerConfig = {
-        'cTnI_ng_mL': {
-            name: 'Troponin I',
-            unit: 'ng/mL',
-            low: [1.95, 30.57],
-            medium: [30.57, 58.25],
-            high: [58.25, 147.55],
-            color: 'rgba(6, 182, 212, 1)',
-            explanations: {
-                low: 'Normal heart muscle function. No signs of damage detected.',
-                medium: 'Minor wear and tear of heart muscles. Monitor closely for any changes.',
-                high: 'Possible blockage in blood flow or heart muscle damage. Immediate medical attention recommended.'
-            },
-            baseValue: 30,
-            variation: 80
-        },
-        'BNP_pg_mL': {
-            name: 'BNP',
-            unit: 'pg/mL',
-            low: [5.22, 425.31],
-            medium: [425.31, 866.66],
-            high: [866.66, 1332.17],
-            color: 'rgba(249, 115, 22, 1)',
-            explanations: {
-                low: 'Heart is functioning normally. No signs of stress or failure.',
-                medium: 'Slight elevation may indicate early heart stress. Continue monitoring.',
-                high: 'Elevated BNP suggests potential heart failure or significant cardiac stress. Consult healthcare provider.'
-            },
-            baseValue: 600,
-            variation: 500
-        },
-        'Myoglobin_ng_mL': {
-            name: 'Myoglobin',
-            unit: 'ng/mL',
-            low: [0.96, 14.96],
-            medium: [14.96, 28.56],
-            high: [28.56, 71.03],
-            color: 'rgba(34, 197, 94, 1)',
-            explanations: {
-                low: 'Normal muscle protein levels. No muscle damage detected.',
-                medium: 'Slight elevation may indicate minor muscle or cardiac tissue stress.',
-                high: 'High myoglobin levels suggest significant muscle or heart tissue damage. Seek medical evaluation.'
-            },
-            baseValue: 20,
-            variation: 30
-        },
-        'Calculated_Troponin_ng_mL': {
-            name: 'Calculated Troponin',
-            unit: 'ng/mL',
-            low: [0.5, 1.2],
-            medium: [1.2, 2.0],
-            high: [2.0, 5.0],
-            color: 'rgba(168, 85, 247, 1)',
-            explanations: {
-                low: 'Calculated troponin within normal range. Heart function appears stable.',
-                medium: 'Moderate troponin levels detected. May indicate minor cardiac stress.',
-                high: 'High calculated troponin suggests possible myocardial injury. Medical assessment advised.'
-            },
-            baseValue: 1.5,
-            variation: 2.5
-        }
-    };
-
-    const monitoringModes = {
-        normal: {
-            label: 'Normal case',
-            description: 'Stable biomarker pattern with only mild day-to-day drift.',
-            probabilities: { low: 0.7, medium: 0.25, high: 0.05 },
-            safeMessage: 'Readings align with baseline recovery targets. Keep monitoring but no immediate action is needed.',
-            alertNote: 'Spikes in this mode are unusual. Re-run the test setup and consult a clinician if they persist.'
-        },
-        moderate: {
-            label: 'Moderate case',
-            description: 'Borderline values that hover near the intervention threshold.',
-            probabilities: { low: 0.25, medium: 0.5, high: 0.25 },
-            safeMessage: 'Values are hovering near the caution zone. Maintain rest and hydration; retest soon.',
-            alertNote: 'Elevations reflect rising stress on the heart. Consider scheduling diagnostics if trends continue.'
-        },
-        high: {
-            label: 'High-risk case',
-            description: 'Persistently abnormal readings suggesting acute cardiac stress.',
-            probabilities: { low: 0.05, medium: 0.25, high: 0.7 },
-            safeMessage: 'Even though the current point looks calmer, this profile typically escalates quickly. Stay alert.',
-            alertNote: 'Multiple biomarkers indicate possible myocardial injury. Seek medical attention immediately.'
-        }
-    };
-
- const sampleDataBlocks = {
-        normal: [
-            {
-                title: 'Morning Ward Set',
-                description: '10 readings | Troponin 10-15 | BNP <400 | Normal',
-                series: [
-                    { cTnI_ng_mL: 11.8, BNP_pg_mL: 365, Myoglobin_ng_mL: 12.4, Calculated_Troponin_ng_mL: 0.94 },
-                    { cTnI_ng_mL: 12.1, BNP_pg_mL: 358, Myoglobin_ng_mL: 11.9, Calculated_Troponin_ng_mL: 0.97 },
-                    { cTnI_ng_mL: 13.4, BNP_pg_mL: 372, Myoglobin_ng_mL: 13.1, Calculated_Troponin_ng_mL: 1.01 },
-                    { cTnI_ng_mL: 14.2, BNP_pg_mL: 389, Myoglobin_ng_mL: 13.6, Calculated_Troponin_ng_mL: 1.05 },
-                    { cTnI_ng_mL: 13.8, BNP_pg_mL: 380, Myoglobin_ng_mL: 12.8, Calculated_Troponin_ng_mL: 1.02 }
-                ]
-            }
-        ],
-        moderate: [
-            {
-                title: 'Stress Test Set',
-                description: '10 readings | Troponin 45-55 | BNP 650+ | Clear Moderate Elevation',
-                series: [
-                    // Boosted values to ensure they trigger Score >= 2
-                    { cTnI_ng_mL: 75.5, BNP_pg_mL: 652, Myoglobin_ng_mL: 26.8, Calculated_Troponin_ng_mL: 1.55 },
-                    { cTnI_ng_mL: 46.2, BNP_pg_mL: 668, Myoglobin_ng_mL: 27.6, Calculated_Troponin_ng_mL: 1.58 },
-                    { cTnI_ng_mL: 47.9, BNP_pg_mL: 682, Myoglobin_ng_mL: 28.1, Calculated_Troponin_ng_mL: 1.62 },
-                    { cTnI_ng_mL: 49.4, BNP_pg_mL: 695, Myoglobin_ng_mL: 29.3, Calculated_Troponin_ng_mL: 1.68 },
-                    { cTnI_ng_mL: 51.0, BNP_pg_mL: 708, Myoglobin_ng_mL: 30.0, Calculated_Troponin_ng_mL: 1.72 },
-                    { cTnI_ng_mL: 52.3, BNP_pg_mL: 720, Myoglobin_ng_mL: 30.8, Calculated_Troponin_ng_mL: 1.76 },
-                    { cTnI_ng_mL: 53.7, BNP_pg_mL: 732, Myoglobin_ng_mL: 31.5, Calculated_Troponin_ng_mL: 1.80 },
-                    { cTnI_ng_mL: 54.1, BNP_pg_mL: 745, Myoglobin_ng_mL: 31.3, Calculated_Troponin_ng_mL: 1.82 },
-                    { cTnI_ng_mL: 52.4, BNP_pg_mL: 719, Myoglobin_ng_mL: 30.1, Calculated_Troponin_ng_mL: 1.75 },
-                    { cTnI_ng_mL: 50.8, BNP_pg_mL: 735, Myoglobin_ng_mL: 29.8, Calculated_Troponin_ng_mL: 1.70 }
-                ]
-            }
-        ],
-        high: [
-            {
-                title: 'ED Acute Set',
-                description: '10 readings | Troponin 90+ | BNP 1000+ | Critical High Risk',
-                series: [
-                    { cTnI_ng_mL: 95.4, BNP_pg_mL: 1050, Myoglobin_ng_mL: 55.8, Calculated_Troponin_ng_mL: 2.85 },
-                    { cTnI_ng_mL: 102.7, BNP_pg_mL: 1080, Myoglobin_ng_mL: 58.1, Calculated_Troponin_ng_mL: 3.05 },
-                    { cTnI_ng_mL: 108.3, BNP_pg_mL: 1120, Myoglobin_ng_mL: 60.9, Calculated_Troponin_ng_mL: 3.28 },
-                    { cTnI_ng_mL: 113.5, BNP_pg_mL: 1150, Myoglobin_ng_mL: 62.6, Calculated_Troponin_ng_mL: 3.45 },
-                    { cTnI_ng_mL: 119.1, BNP_pg_mL: 1180, Myoglobin_ng_mL: 64.2, Calculated_Troponin_ng_mL: 3.62 },
-                    { cTnI_ng_mL: 124.6, BNP_pg_mL: 1210, Myoglobin_ng_mL: 65.9, Calculated_Troponin_ng_mL: 3.80 },
-                    { cTnI_ng_mL: 128.2, BNP_pg_mL: 1240, Myoglobin_ng_mL: 67.5, Calculated_Troponin_ng_mL: 3.95 },
-                    { cTnI_ng_mL: 132.5, BNP_pg_mL: 1270, Myoglobin_ng_mL: 69.0, Calculated_Troponin_ng_mL: 4.10 },
-                    { cTnI_ng_mL: 135.8, BNP_pg_mL: 1290, Myoglobin_ng_mL: 70.2, Calculated_Troponin_ng_mL: 4.22 },
-                    { cTnI_ng_mL: 131.9, BNP_pg_mL: 1260, Myoglobin_ng_mL: 68.6, Calculated_Troponin_ng_mL: 4.05 }
-                ]
-            }
-        ]
-    };
-
-
-    const fieldAliasMap = {
-        ctni_ng_ml: 'cTnI_ng_mL',
-        ctningml: 'cTnI_ng_mL',
-        ctni: 'cTnI_ng_mL',
-        troponin: 'cTnI_ng_mL',
-        troponini: 'cTnI_ng_mL',
-        bnp_pg_ml: 'BNP_pg_mL',
-        bnppgml: 'BNP_pg_mL',
-        bnp: 'BNP_pg_mL',
-        myoglobin_ng_ml: 'Myoglobin_ng_mL',
-        myoglobinngml: 'Myoglobin_ng_mL',
-        myoglobin: 'Myoglobin_ng_mL',
-        calculated_troponin_ng_ml: 'Calculated_Troponin_ng_mL',
-        calculatedtroponinngml: 'Calculated_Troponin_ng_mL',
-        calculatedtroponin: 'Calculated_Troponin_ng_mL',
-        troponin_calc: 'Calculated_Troponin_ng_mL'
-    };
-
-    let monitoringMode = 'normal';
-    let selectedSampleButton = null;
-    let currentBlockMeta = null;
-    let currentValues = {};
-    let monitoringInterval = null;
-    let liveChart = null;
-    let activeDataSeries = [];
-    let activeSeriesIndex = 0;
-    let chartData = {
-        labels: [],
-        datasets: []
-    };
-    let maxDataPoints = 20;
-    let notificationPermission = false;
-    let lastHighNotification = {};
-
-    if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-            notificationPermission = permission === 'granted';
-        });
-    }
-
-    const modeDescriptionEl = () => document.getElementById('modeDescription');
-
-    function getRiskCategory(value, config) {
-        if (value < config.medium[0]) return 'low';
-        if (value < config.high[0]) return 'moderate';
-        return 'high';
-    }
-
-    function generateRandomValue(config) {
-        const modeSettings = monitoringModes[monitoringMode] ?? monitoringModes.normal;
-        const probs = modeSettings.probabilities;
-        const rand = Math.random();
-        let bucket = 'high';
-
-        if (rand < probs.low) {
-            bucket = 'low';
-        } else if (rand < probs.low + probs.medium) {
-            bucket = 'medium';
-        }
-
-        const ranges = {
-            low: config.low,
-            medium: config.medium,
-            high: config.high
-        };
-
-        const [min, max] = ranges[bucket];
-        let value = min + Math.random() * Math.max(0.0001, max - min);
-        const variation = (config.high[1] - config.low[0]) * 0.08;
-        value += (Math.random() - 0.5) * variation;
-        return Math.max(config.low[0], Math.min(config.high[1], value));
-    }
-
-    function buildMonitoringSnapshot() {
-        const snapshot = {};
-        let currentRow = null;
-        if (Array.isArray(activeDataSeries) && activeDataSeries.length) {
-            currentRow = activeDataSeries[activeSeriesIndex % activeDataSeries.length];
-            activeSeriesIndex = (activeSeriesIndex + 1) % activeDataSeries.length;
-        }
-
-        Object.entries(biomarkerConfig).forEach(([key, config]) => {
-            let value;
-            if (currentRow && Object.prototype.hasOwnProperty.call(currentRow, key)) {
-                const base = parseFloat(currentRow[key]);
-                const jitter = (Math.random() - 0.5) * (Math.max(1, config.variation) * 0.02);
-                value = Math.max(config.low[0], Math.min(config.high[1], base + jitter));
-            } else {
-                value = generateRandomValue(config);
-            }
-
-            snapshot[key] = {
-                value,
-                category: getRiskCategory(value, config),
-                config
-            };
-        });
-
-        return snapshot;
-    }
-
-    function normalizeFieldKey(rawKey) {
-        if (!rawKey) return null;
-        const normalized = rawKey.toString().toLowerCase().replace(/[^a-z_]/g, '');
-        const compressed = normalized.replace(/_/g, '');
-        return fieldAliasMap[normalized] ?? fieldAliasMap[compressed] ?? null;
-    }
-
-    function valueScore(value, thresholds) {
-        if (typeof value !== 'number') return 0;
-        if (value >= thresholds.high) return 2; 
-        if (value >= thresholds.moderate) return 1; 
-        return 0;
-    }
-
-    function classifyCompositeRisk(row) {
-        // UPDATED THRESHOLDS:
-        // Moderate starts much earlier now to prevent "Low" false negatives.
-        const tHigh = { cTnI: 55, BNP: 850, Myo: 35, Calc: 2.2 };
-        const tMod = { 
-            cTnI: 30,   // Lowered from 20
-            BNP: 300,   // Lowered from 400
-            Myo: 15,    // Lowered from 18
-            Calc: 1.0   // Lowered from 1.1
-        };
-
-        const score =
-            valueScore(row.cTnI_ng_mL, { moderate: tMod.cTnI, high: tHigh.cTnI }) +
-            valueScore(row.BNP_pg_mL, { moderate: tMod.BNP, high: tHigh.BNP }) +
-            valueScore(row.Myoglobin_ng_mL, { moderate: tMod.Myo, high: tHigh.Myo }) +
-            valueScore(row.Calculated_Troponin_ng_mL, { moderate: tMod.Calc, high: tHigh.Calc });
-
-        // Score 5+ = High Risk
-        // Score 2+ = Moderate Risk (Easier to hit now)
-        if (score >= 5) return 'high';     
-        if (score >= 1) return 'moderate'; 
+    function setLoading(isLoading) {
+        const btn = document.getElementById('predictBtn');
+        const spinner = document.getElementById('btnSpinner');
+        const text = document.getElementById('btnText');
         
-        return 'low';
+        btn.disabled = isLoading;
+        spinner.style.display = isLoading ? 'inline-block' : 'none';
+        text.textContent = isLoading ? 'Processing...' : 'Analyze Risk';
     }
 
-    function summarizeSeries(series) {
-        const counts = { low: 0, moderate: 0, high: 0 };
-        (series || []).forEach((row) => {
-            const bucket = classifyCompositeRisk(row);
-            counts[bucket] += 1;
+    function renderResult(data) {
+        document.getElementById('result-section').classList.remove('hidden');
+        
+        const badge = document.getElementById('riskBadge');
+        badge.className = `risk-badge risk-${data.risk_category}`;
+        badge.textContent = `${data.risk_category} Risk`;
+        
+        document.getElementById('interpretationText').textContent = data.interpretation;
+        
+        updateProbChart(data.probability);
+    }
+
+    function updateProbChart(probs) {
+        const ctx = document.getElementById('probChart').getContext('2d');
+        const labels = Object.keys(probs);
+        const values = Object.values(probs);
+        
+        const colors = labels.map(l => {
+            if (l === 'High') return '#ef4444';
+            if (l === 'Moderate') return '#f97316';
+            return '#22c55e';
         });
-        const total = series?.length ?? 0;
-        const dominantKey = ['high', 'moderate', 'low'].reduce((prev, key) => {
-            return counts[key] >= counts[prev] ? key : prev;
-        }, 'low');
-        const dominantLabel = dominantKey.charAt(0).toUpperCase() + dominantKey.slice(1);
-        return { counts, total, dominantKey, dominantLabel };
-    }
 
-    function updateBlockSummary() {
-        const summaryEl = document.getElementById('blockSummary');
-        if (!summaryEl) return;
-
-        if (!currentBlockMeta) {
-            summaryEl.innerHTML =
-                '<p class="block-summary__desc">No data block selected. Live monitoring is running in random mode.</p>';
-            return;
-        }
-
-        const { label, description, counts, total, dominantLabel } = currentBlockMeta;
-        summaryEl.innerHTML = `
-            <div class="block-summary__title">${label}</div>
-            ${description ? `<p class="block-summary__desc">${description}</p>` : ''}
-            <div class="summary-grid">
-                <div class="summary-chip status-high">High: ${counts.high}</div>
-                <div class="summary-chip status-moderate">Moderate: ${counts.moderate}</div>
-                <div class="summary-chip status-low">Low: ${counts.low}</div>
-            </div>
-            <p class="block-summary__footer">Rows: ${total} | Dominant profile: ${dominantLabel}</p>
-        `;
-    }
-
-    function setActiveDataSeries(series, meta = {}) {
-        if (Array.isArray(series) && series.length) {
-            const summary = summarizeSeries(series);
-            currentBlockMeta = {
-                label: meta.label ?? 'Custom block',
-                description: meta.description ?? '',
-                counts: summary.counts,
-                total: summary.total,
-                dominantKey: summary.dominantKey,
-                dominantLabel: summary.dominantLabel
-            };
-            activeDataSeries = series.slice();
-            activeSeriesIndex = 0;
-        } else {
-            currentBlockMeta = null;
-            activeDataSeries = [];
-            activeSeriesIndex = 0;
-        }
-        updateBlockSummary();
-    }
-
-    function fillFormForRow(row) {
-        if (!row) return;
-        const form = document.getElementById('predictionForm');
-        if (!form) return;
-        const inputs = form.querySelectorAll('input[name]');
-
-        inputs.forEach((inp) => {
-            const name = inp.name;
-            if (Object.prototype.hasOwnProperty.call(row, name)) {
-                inp.value = parseFloat(row[name]);
-            }
-        });
-    }
-
-    function parseCustomBlock(text) {
-        if (!text || !text.trim()) return [];
-        const chunks = text.trim().split(/\n\s*\n/).map((chunk) => chunk.trim()).filter(Boolean);
-        const rows = [];
-
-        chunks.forEach((chunk) => {
-            const row = {};
-            chunk.split(/\n/).forEach((line) => {
-                const match = line.match(/([A-Za-z_]+)\s*[:=]\s*([-+]?[0-9]*\.?[0-9]+)/);
-                if (!match) return;
-                const key = normalizeFieldKey(match[1]);
-                const value = parseFloat(match[2]);
-                if (key && !Number.isNaN(value)) {
-                    row[key] = value;
+        if (probChart) probChart.destroy();
+        
+        probChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, max: 1, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                    y: { grid: { display: false }, ticks: { color: '#e2e8f0' } }
                 }
-            });
-            if (Object.keys(row).length) {
-                rows.push(row);
             }
         });
-
-        return rows;
     }
 
-    function setCustomStatus(message, variant = 'info') {
-        const statusEl = document.getElementById('customBlockStatus');
-        if (!statusEl) return;
-        statusEl.textContent = message;
-        statusEl.className = `custom-status ${variant}`;
-    }
-
-    function applyCustomBlockFromTextarea() {
-        const textarea = document.getElementById('dataBlockInput');
-        if (!textarea) return;
-        const parsedRows = parseCustomBlock(textarea.value);
-
-        if (!parsedRows.length) {
-            setCustomStatus('Unable to detect numeric rows. Please paste values with labels like cTnI: 42.1', 'error');
-            return;
-        }
-
-        if (selectedSampleButton) {
-            selectedSampleButton.classList.remove('active');
-            selectedSampleButton = null;
-        }
-
-        setActiveDataSeries(parsedRows, {
-            label: `Custom block (${parsedRows.length} rows)`,
-            description: 'User supplied readings'
-        });
-        setCustomStatus(
-            `Custom block analysed (rows: ${parsedRows.length}). See summary below for Low / Moderate / High distribution.`,
-            'success'
-        );
+    async function fetchExplanation(id) {
         try {
-            const first = parsedRows[0];
-            if (first) {
-                fillFormForRow(first);
-                setTimeout(() => {
-                    const predictBtn = document.getElementById('predictBtn');
-                    if (predictBtn) predictBtn.click();
-                }, 250);
-            }
-        } catch (err) {
-            console.error('Error applying custom block to inputs', err);
-        }
-    }
-
-    function sendNotification(biomarker, value, config) {
-        if (!notificationPermission) return;
-        const now = Date.now();
-        if (lastHighNotification[biomarker] && (now - lastHighNotification[biomarker]) < 10000) {
-            return;
-        }
-        lastHighNotification[biomarker] = now;
-        new Notification('⚠️ High Biomarker Alert', {
-            body: `${config.name}: ${value.toFixed(2)} ${config.unit}\n${config.explanations.high}`,
-            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ef4444"/><text x="50" y="70" font-size="60" text-anchor="middle" fill="white">!</text></svg>',
-            tag: `high-${biomarker}`,
-            requireInteraction: true
-        });
-    }
-
-    function updateChart(newValues) {
-        const timestamp = new Date().toLocaleTimeString();
-        chartData.labels.push(timestamp);
-        if (chartData.labels.length > maxDataPoints) {
-            chartData.labels.shift();
-        }
-        Object.keys(biomarkerConfig).forEach((biomarker, index) => {
-            if (!chartData.datasets[index]) {
-                const config = biomarkerConfig[biomarker];
-                chartData.datasets[index] = {
-                    label: `${config.name} (${config.unit})`,
-                    data: [],
-                    borderColor: config.color,
-                    backgroundColor: config.color.replace('1)', '0.2)'),
-                    borderWidth: 2,
-                    fill: false,
-                    tension: 0.4
-                };
-            }
-            const value = newValues[biomarker].value;
-            chartData.datasets[index].data.push(value);
-            if (chartData.datasets[index].data.length > maxDataPoints) {
-                chartData.datasets[index].data.shift();
-            }
-        });
-        if (liveChart) {
-            liveChart.update('none');
-        }
-    }
-
-    function updateLegend() {
-        const legend = document.getElementById('biomarkerLegend');
-        legend.innerHTML = '';
-        Object.keys(biomarkerConfig).forEach(biomarker => {
-            if (!currentValues[biomarker]) return;
-            const item = currentValues[biomarker];
-            const config = item.config;
-            const category = item.category;
-            const legendItem = document.createElement('div');
-            legendItem.className = 'legend-item';
-            const statusClass = `status-${category}`;
-            legendItem.innerHTML = `
-                <div class="legend-color" style="background-color: ${config.color}"></div>
-                <span class="legend-value">${config.name}: ${item.value.toFixed(2)} ${config.unit}</span>
-                <span class="legend-status ${statusClass}">${category}</span>
-            `;
-            legend.appendChild(legendItem);
-        });
-    }
-
-    function updateModeDescription() {
-        const modeSettings = monitoringModes[monitoringMode] ?? monitoringModes.normal;
-        const descEl = modeDescriptionEl();
-        if (descEl) {
-            descEl.textContent = `${modeSettings.label}: ${modeSettings.description}`;
-        }
-    }
-
-    function renderSampleBlocks() {
-        const container = document.getElementById('sampleBlockContainer');
-        if (!container) return;
-        container.innerHTML = '';
-        ['normal', 'moderate', 'high'].forEach((modeKey) => {
-            const samples = sampleDataBlocks[modeKey] || [];
-            const group = document.createElement('div');
-            group.className = 'sample-group';
-            const heading = document.createElement('h3');
-            heading.textContent = monitoringModes[modeKey]?.label || modeKey;
-            group.appendChild(heading);
-            const list = document.createElement('div');
-            list.className = 'sample-list';
-            samples.forEach((sample, index) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'sample-block';
-                btn.dataset.mode = modeKey;
-                btn.dataset.index = String(index);
-                const title = document.createElement('div');
-                title.className = 'sample-title';
-                title.textContent = sample.title || `Sample ${index + 1}`;
-                const code = document.createElement('pre');
-                code.textContent = sample.description || 'Preset readings';
-                btn.appendChild(title);
-                btn.appendChild(code);
-                btn.addEventListener('click', () => onSelectSample(modeKey, index, btn));
-                list.appendChild(btn);
+            const res = await fetch(`${BACKEND_URL}/explain/${id}`, {
+                headers: { 'X-API-Key': API_KEY }
             });
-            group.appendChild(list);
-            container.appendChild(group);
-        });
-    }
-
-    function onSelectSample(modeKey, index, button) {
-        const samples = sampleDataBlocks[modeKey] || [];
-        const sample = samples[index];
-        if (!sample) return;
-        const textarea = document.getElementById('dataBlockInput');
-        if (textarea) textarea.value = sample.description || sample.title || '';
-        if (selectedSampleButton) selectedSampleButton.classList.remove('active');
-        button.classList.add('active');
-        selectedSampleButton = button;
-        setMonitoringMode(modeKey, { restart: false });
-        setActiveDataSeries(sample.series, {
-            label: `${monitoringModes[modeKey]?.label || modeKey} - ${sample.title}`,
-            description: sample.description
-        });
-        setCustomStatus(
-            `Preset block analysed (rows: ${Array.isArray(sample.series) ? sample.series.length : 0}).`,
-            'info'
-        );
-        try {
-            const firstRow = Array.isArray(sample.series) && sample.series.length ? sample.series[0] : null;
-            if (firstRow) {
-                fillFormForRow(firstRow);
-                setTimeout(() => {
-                    const predictBtn = document.getElementById('predictBtn');
-                    if (predictBtn) predictBtn.click();
-                }, 250);
+            if (res.ok) {
+                const data = await res.json();
+                renderExplanation(data.top_features);
             }
-        } catch (err) {
-            console.error('Error applying sample to inputs:', err);
-        }
+        } catch (e) { console.error("Explainer unavailable", e); }
     }
 
-    function attachModeToggleHandlers() {
-        const toggle = document.getElementById('modeToggle');
-        if (!toggle) return;
-        toggle.querySelectorAll('.mode-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                setMonitoringMode(btn.dataset.mode);
-            });
-        });
+    function renderExplanation(features) {
+        const list = document.getElementById('shapList');
+        document.getElementById('explanationCard').classList.remove('hidden');
+        list.innerHTML = features.map(f => `
+            <div style="background: #111a2c; padding: 10px; border-radius: 6px; border: 1px solid #334155;">
+                <div style="font-size: 0.75rem; color: #94a3b8;">${f.feature}</div>
+                <div style="font-weight: 600; color: ${f.shap_value > 0 ? '#ef4444' : '#22c55e'}">
+                    ${f.shap_value > 0 ? '+' : ''}${f.shap_value.toFixed(4)}
+                </div>
+            </div>
+        `).join('');
     }
 
-    function setMonitoringMode(modeKey, options = {}) {
-        if (!monitoringModes[modeKey]) {
-            modeKey = 'normal';
-        }
-        monitoringMode = modeKey;
-        const { restart = true } = options;
-        const toggle = document.getElementById('modeToggle');
-        if (toggle) {
-            toggle.querySelectorAll('.mode-btn').forEach((btn) => {
-                btn.classList.toggle('active', btn.dataset.mode === monitoringMode);
-            });
-        }
-        updateModeDescription();
-        if (restart) {
-            initializeMonitoring();
-        }
+    function addToHistory(data) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        predictionHistory.unshift({ time, risk: data.risk_category, conf: data.confidence });
+        if (predictionHistory.length > 5) predictionHistory.pop();
+        
+        const body = document.getElementById('historyBody');
+        body.innerHTML = predictionHistory.map(h => `
+            <tr>
+                <td>${h.time}</td>
+                <td><span class="status-pill risk-${h.risk}">${h.risk}</span></td>
+                <td>${(h.conf * 100).toFixed(0)}%</td>
+            </tr>
+        `).join('');
     }
 
-    function resetMonitoringState() {
-        if (monitoringInterval) {
-            clearInterval(monitoringInterval);
-            monitoringInterval = null;
-        }
-        chartData = { labels: [], datasets: [] };
-        currentValues = {};
-        if (liveChart) {
-            liveChart.destroy();
-            liveChart = null;
-        }
-    }
-
-    function initializeMonitoring() {
-        resetMonitoringState();
-        updateModeDescription();
-        if (activeDataSeries && activeDataSeries.length) {
-            activeSeriesIndex = 0;
-        }
-        const ctx = document.getElementById('liveMonitoringChart').getContext('2d');
+    // Monitoring System
+    function initLiveChart() {
+        const ctx = document.getElementById('liveChart').getContext('2d');
         liveChart = new Chart(ctx, {
             type: 'line',
-            data: chartData,
+            data: { labels: [], datasets: Object.keys(config).map(k => ({
+                label: config[k].name,
+                data: [],
+                borderColor: config[k].color,
+                tension: 0.3,
+                borderWidth: 2,
+                pointRadius: 0
+            }))},
             options: {
-                responsive: true,
                 maintainAspectRatio: false,
-                animation: { duration: 0 },
-                interaction: { intersect: false, mode: 'index' },
-                plugins: {
-                    legend: { display: true, position: 'top', labels: { color: '#94a3b8', usePointStyle: true, padding: 15 } },
-                    tooltip: { backgroundColor: 'rgba(30, 41, 59, 0.95)', titleColor: '#e2e8f0', bodyColor: '#e2e8f0', borderColor: '#334155', borderWidth: 1 }
-                },
+                animation: false,
                 scales: {
-                    x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', maxRotation: 45, minRotation: 45 } },
-                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-                }
+                    x: { grid: { display: false }, ticks: { display: false } },
+                    y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } }
+                },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 10 } } } }
             }
         });
-        const initialSnapshot = buildMonitoringSnapshot();
-        currentValues = initialSnapshot;
-        updateChart(initialSnapshot);
-        updateLegend();
-        updateMessageButton();
-        if (monitoringInterval) clearInterval(monitoringInterval);
-        monitoringInterval = setInterval(() => {
-            const snapshot = buildMonitoringSnapshot();
-            let hasHigh = false;
-            Object.entries(snapshot).forEach(([biomarker, entry]) => {
-                if (entry.category === 'high') {
-                    hasHigh = true;
-                    sendNotification(biomarker, entry.value, entry.config);
-                }
+    }
+
+    function startMonitoring() {
+        setInterval(() => {
+            const mode = document.getElementById('monitoringMode').value;
+            const time = new Date().toLocaleTimeString();
+            
+            liveChart.data.labels.push(time);
+            if (liveChart.data.labels.length > 20) liveChart.data.labels.shift();
+
+            Object.keys(config).forEach((key, i) => {
+                const range = config[key].ranges[mode];
+                const val = range[0] + Math.random() * (range[1] - range[0]);
+                liveChart.data.datasets[i].data.push(val);
+                if (liveChart.data.datasets[i].data.length > 20) liveChart.data.datasets[i].data.shift();
             });
-            currentValues = snapshot;
-            updateChart(snapshot);
-            updateLegend();
-            updateMessageButton();
-            if (hasHigh) {
-                showMessage();
-            }
-        }, 3000);
+            
+            liveChart.update();
+        }, 2000);
     }
 
-    function hasHighRisk() {
-        return Object.values(currentValues).some(item => item.category === 'high');
+    function initSamples() {
+        const container = document.getElementById('sampleBlocks');
+        container.innerHTML = samples.map(s => `
+            <div onclick="applySample(${JSON.stringify(s.data).replace(/"/g, '&quot;')})" 
+                 style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155; cursor: pointer; transition: all 0.2s;"
+                 onmouseover="this.style.borderColor='var(--accent-cyan)'"
+                 onmouseout="this.style.borderColor='#334155'">
+                <div style="font-weight: 600; font-size: 0.9rem; color: var(--accent-cyan);">${s.title}</div>
+                <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px;">
+                    Trop: ${s.data.cTnI_ng_mL} | BNP: ${s.data.BNP_pg_mL}
+                </div>
+            </div>
+        `).join('');
     }
 
-    function updateMessageButton() {
-        const btn = document.getElementById('showMessageBtn');
-        if (hasHighRisk()) {
-            btn.classList.add('alert');
-        } else {
-            btn.classList.remove('alert');
-        }
-    }
-
-    function showMessage() {
-        const messageBox = document.getElementById('messageBox');
-        const messageTitle = document.getElementById('messageTitle');
-        const messageContent = document.getElementById('messageContent');
-        const hasHigh = hasHighRisk();
-        const highMarkers = Object.entries(currentValues)
-            .filter(([_, item]) => item.category === 'high')
-            .map(([key, item]) => ({ name: item.config.name, item }));
-        const modeSettings = monitoringModes[monitoringMode] ?? monitoringModes.normal;
-        if (hasHigh) {
-            messageBox.className = 'message-box show alert';
-            messageTitle.textContent = `⚠️ Abnormal Readings Detected (${modeSettings.label})`;
-            let content = '<p>The following biomarkers are showing elevated levels:</p><ul style="margin: 10px 0; padding-left: 20px;">';
-            highMarkers.forEach(({ name, item }) => {
-                content += `<li style="margin-bottom: 10px;"><strong>${name}:</strong> ${item.value.toFixed(2)} ${item.config.unit}<br>`;
-                content += `<span style="font-size: 0.9em; color: #cbd5e1;">${item.config.explanations.high}</span></li>`;
-            });
-            content += `</ul><p style="margin-top: 15px;">${modeSettings.alertNote}</p>`;
-            messageContent.innerHTML = content;
-        } else {
-            messageBox.className = 'message-box show safe';
-            messageTitle.textContent = `✓ Current Readings Look Safe (${modeSettings.label})`;
-            messageContent.innerHTML = `<p>${modeSettings.safeMessage}</p>`;
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        renderSampleBlocks();
-        attachModeToggleHandlers();
-        setCustomStatus('Paste readings or choose a sample block.', 'info');
-        setMonitoringMode('normal', { restart: false });
-        initializeMonitoring();
-        document.getElementById('showMessageBtn').addEventListener('click', showMessage);
-        const applyBtn = document.getElementById('applyCustomBlockBtn');
-        if (applyBtn) {
-            applyBtn.addEventListener('click', applyCustomBlockFromTextarea);
-        }
-    });
+    window.applySample = (data) => {
+        Object.keys(data).forEach(key => {
+            const input = document.querySelector(`[name="${key}"]`);
+            if (input) input.value = data[key];
+        });
+        document.getElementById('predictBtn').click();
+    };
 </script>
 
 </body>

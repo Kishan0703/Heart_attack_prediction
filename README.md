@@ -1,101 +1,97 @@
-# Heart Attack Prediction
+# Cardiac Risk Prediction AI
 
-ML pipeline that classifies cardiac risk levels (Low / Moderate / High) from multiplex biomarker measurements, exposes a FastAPI backend, and ships with a small HTML dashboard for manual scoring.
+An end-to-end Machine Learning system that classifies cardiac risk levels (**Low**, **Moderate**, **High**) based on multiplex biomarker measurements. The system features a robust FastAPI backend, a comprehensive HTML5 dashboard, and automated model explanation via SHAP.
 
-## Project Layout
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.12-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-v0.136.0-green.svg)
 
-- `Heart_attack_dataset.csv` – raw dataset (has a metadata line that we skip on load).
-- `model/train.py` – trains several classifiers, picks the best, and writes artifacts to `model/`.
-- `backend/main.py` – FastAPI service that loads the artifacts and serves `/predict`.
-- `frontend/index.html` – static UI that posts biomarker values to the API.
-- `requirements.txt` – Python dependencies for both training and serving.
+## 🚀 Key Features
 
-## Prerequisites
+- **Advanced ML Pipeline**: Automated training with Stratified 5-Fold Cross-Validation and SMOTE for class imbalance.
+- **Explainable AI (XAI)**: Integrated SHAP explainer to provide feature-level importance for every prediction.
+- **Robust API**: FastAPI backend with Pydantic validation, structured logging, rate limiting (slowapi), and API-Key security.
+- **Modern Dashboard**: Responsive UI with Chart.js visualization, prediction history, and real-time biomarker monitoring simulations.
+- **Production Ready**: Fully dockerized with Docker Compose support and GitHub Actions CI for linting and testing.
 
-- Python ≥ 3.10 (tested on 3.12).
-- `pip` and a working C/C++ build chain (for LightGBM/XGBoost wheels if binaries are missing).
+## 🏗️ Architecture
 
-## Setup & Run
+Refer to [README_ARCH.md](./README_ARCH.md) for a detailed system diagram and component breakdown.
 
-## Create a virtual environment (macOS)
-python3 -m venv venv
-source venv/bin/activate
+## 📁 Project Structure
 
-## Create a virtual environment (Windows)
-python -m venv venv
-venv\Scripts\activate
+- `backend/` - FastAPI server and API logic.
+- `frontend/` - Responsive dashboard (HTML/JS/CSS).
+- `model/` - Training scripts and serialized artifacts (`.pkl`).
+- `data/` - Training dataset (`Heart_attack_dataset.csv`).
+- `tests/` - Pytest suite for API validation.
+- `Dockerfile` & `docker-compose.yml` - Containerization and orchestration.
+- `.github/workflows/` - CI/CD pipeline.
 
-## Install dependencies (macOS)
-pip3 install -r requirements.txt
+## 🛠️ Quick Start
 
-## Install dependencies (Windows)
-pip install -r requirements.txt
+### Prerequisites
+- Python 3.12+
+- Docker & Docker Compose (optional)
 
-## Train or refresh the ML model (macOS)
-python3 model/train.py
+### Local Setup
+1. **Clone and Setup Environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   cp .env.example .env
+   ```
 
-## Train or refresh the ML model (Windows)
-python model/train.py
+2. **Train the Model**:
+   ```bash
+   python model/train.py
+   ```
 
-## Start the FastAPI backend on port 8000 (same for both OS)
-uvicorn backend.main:app --host 127.0.0.1 --port 8000
+3. **Run the API**:
+   ```bash
+   uvicorn backend.main:app --host 0.0.0.0 --port 8000
+   ```
 
-## Run the frontend using a simple local server (macOS)
-cd frontend
-python3 -m http.server 8080
+4. **Access the Dashboard**:
+   Open `http://localhost:8000` in your browser.
 
-## Run the frontend using a simple local server (Windows)
-cd frontend
-python -m http.server 8080
+### Docker Setup
+```bash
+docker-compose up --build
+```
 
+## 🔌 API Reference
 
+Protected endpoints require the `X-API-Key` header.
 
-Steps 1‑4 must finish before the API can answer predictions. Step 5 is only needed if you want to load the HTML page via `http://127.0.0.1:8080/`; alternatively open `frontend/index.html` directly in a browser.
+- `GET /health` - Check API and model artifact status.
+- `POST /predict` - Get risk prediction from biomarkers.
+- `GET /explain/{prediction_id}` - Get SHAP explanations for a prediction.
 
-## API Reference
-
-- `GET /` – health probe.
-- `POST /predict` – accepts JSON with the biomarker fields used during training (see `backend/main.py::BiomarkerInput`). Example payload:
-
+### Example Prediction Payload
 ```json
 {
+  "cTnI_ng_mL": 14.35,
+  "BNP_pg_mL": 623.42,
+  "Myoglobin_ng_mL": 15.02,
+  "Peak_Current_uA": 280.74,
   "I_620": 585.7,
   "I_540": 735.3,
   "R620": 1.485,
   "R540": 3.025,
-  "cTnI_ng_mL": 14.35,
-  "Myoglobin_ng_mL": 15.025,
-  "Raw_Fluorescence_au": 2149.01,
-  "DeltaF_au": 949.01,
-  "Calculated_Troponin_ng_mL": 1.1863,
-  "Peak_Current_uA": 280.739,
-  "BNP_pg_mL": 623.42
+  "Raw_Fluorescence_au": 2149.0,
+  "DeltaF_au": 949.0,
+  "Calculated_Troponin_ng_mL": 1.186
 }
 ```
 
-Response:
-
-```json
-{
-  "risk_category": "High",
-  "probability": {
-    "High": 0.82,
-    "Low": 0.03,
-    "Moderate": 0.15
-  },
-  "confidence": 0.82,
-  "interpretation": "High Troponin I levels detected (Strong MI Indicator). Elevated BNP levels suggest potential heart failure."
-}
+## 🧪 Testing & Quality
+Run the automated test suite:
+```bash
+pytest tests/
 ```
+The project uses `flake8` for linting and `pytest` for unit/integration testing, both of which are enforced via GitHub Actions.
 
-## Frontend
-
-The single-page dashboard in `frontend/index.html` mirrors the JSON schema above, sends inputs to `http://localhost:8000/predict`, and renders the response plus class probabilities using Chart.js. Ensure the backend is running before clicking “Analyze Risk”.
-
-## Troubleshooting
-
-- **Permission errors under `~/.matplotlib` or CPython cache**: export `MPLCONFIGDIR=/tmp/mpl` (or another writable dir) before training.
-- **`Model not loaded` from API**: re-run `python3 model/train.py` so `model/pipeline.pkl`, `model/label_encoder.pkl`, and `model/features.pkl` exist, then restart Uvicorn.
-- **Frontend CORS issues**: serve it via `python3 -m http.server` rather than opening the file directly, or adjust the backend CORS settings in `backend/main.py`.
-
-Feel free to extend this stack with monitoring, dockerization, or additional endpoints as needed.
+## 📄 License
+This project is licensed under the MIT License.
