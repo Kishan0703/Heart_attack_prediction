@@ -11,13 +11,15 @@ Quick deploy steps on Render:
    - Build Command: `pip install -r requirements.txt`
    - Start Command: (Render will use the `Procfile`) or set manually:
      - `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
-4. Add any environment variables you need (none required by default). If you have model artifacts (`model/*.pkl`), ensure they are present in the repo or configure Render to fetch them at deploy time.
+4. **Environment Variables**:
+   - `API_KEY`: Set this to a secure string to protect your `/predict` and `/explain` endpoints.
+   - `PORT`: (Managed by Render).
 
 Notes and recommendations:
 - `requirements.txt` includes `aiofiles` required by FastAPI `StaticFiles`.
 - The `Procfile` (`web: uvicorn backend.main:app --host 0.0.0.0 --port $PORT`) is present and will be used by Render.
 - The frontend performs requests to `/predict` (relative path) so both API and SPA must run from the same origin — this layout serves SPA via FastAPI.
-- If your model files are large, consider storing them in an object store (S3, DigitalOcean Spaces) and loading them at startup.
+- Ensure your model artifacts (`model/*.pkl`) are committed to the repository (if small enough) or fetched during the build step.
 
 Local test:
 
@@ -25,8 +27,6 @@ Local test:
 # from project root
 pip install -r requirements.txt
 # run locally
-python main.py
-# open http://localhost:10000
+uvicorn backend.main:app --host 0.0.0.0 --port 8000
+# open http://localhost:8000
 ```
-
-If you want, I can also add a small GitHub Actions workflow that builds and deploys to Render's API, or add instructions to fetch model artifacts from an external storage during startup.

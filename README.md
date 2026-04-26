@@ -8,10 +8,11 @@ An end-to-end Machine Learning system that classifies cardiac risk levels (**Low
 
 ## 🚀 Key Features
 
-- **Advanced ML Pipeline**: Automated training with Stratified 5-Fold Cross-Validation and SMOTE for class imbalance.
-- **Explainable AI (XAI)**: Integrated SHAP explainer to provide feature-level importance for every prediction.
+- **Advanced ML Pipeline**: Automated training with Stratified 5-Fold Cross-Validation, SMOTE for class imbalance, and selection from multiple algorithms (XGBoost, LightGBM, Random Forest, SVM).
+- **Explainable AI (XAI)**: Integrated SHAP explainer to provide feature-level importance for every prediction, helping clinicians understand the "why" behind the risk level.
 - **Robust API**: FastAPI backend with Pydantic validation, structured logging, rate limiting (slowapi), and API-Key security.
 - **Modern Dashboard**: Responsive UI with Chart.js visualization, prediction history, and real-time biomarker monitoring simulations.
+- **Regression CLI Utility**: A standalone package for predicting numerical Troponin levels and summarizing dataset statistics.
 - **Production Ready**: Fully dockerized with Docker Compose support and GitHub Actions CI for linting and testing.
 
 ## 🏗️ Architecture
@@ -22,10 +23,12 @@ Refer to [README_ARCH.md](./README_ARCH.md) for a detailed system diagram and co
 
 - `backend/` - FastAPI server and API logic.
 - `frontend/` - Responsive dashboard (HTML/JS/CSS).
-- `model/` - Training scripts and serialized artifacts (`.pkl`).
+- `model/` - Training scripts (`train.py`) and serialized artifacts (`.pkl`).
 - `data/` - Training dataset (`Heart_attack_dataset.csv`).
+- `heart_attack_prediction/` - Regression CLI package.
 - `tests/` - Pytest suite for API validation.
 - `Dockerfile` & `docker-compose.yml` - Containerization and orchestration.
+- `Procfile` & `DEPLOY_RENDER.md` - Deployment configurations.
 - `.github/workflows/` - CI/CD pipeline.
 
 ## 🛠️ Quick Start
@@ -42,8 +45,9 @@ Refer to [README_ARCH.md](./README_ARCH.md) for a detailed system diagram and co
    pip install -r requirements.txt
    cp .env.example .env
    ```
+   *Edit `.env` and set your `API_KEY`.*
 
-2. **Train the Model**:
+2. **Train the Classification Model**:
    ```bash
    python model/train.py
    ```
@@ -55,6 +59,13 @@ Refer to [README_ARCH.md](./README_ARCH.md) for a detailed system diagram and co
 
 4. **Access the Dashboard**:
    Open `http://localhost:8000` in your browser.
+
+### Regression CLI
+To run the regression utility for Troponin level analysis:
+```bash
+# From the project root
+python heart_attack_prediction/src/heart_attack_prediction/main.py --data data/Heart_attack_dataset.csv
+```
 
 ### Docker Setup
 ```bash
@@ -92,6 +103,9 @@ Run the automated test suite:
 pytest tests/
 ```
 The project uses `flake8` for linting and `pytest` for unit/integration testing, both of which are enforced via GitHub Actions.
+
+## ☁️ Deployment
+For instructions on deploying to Render or other cloud providers, see [DEPLOY_RENDER.md](./DEPLOY_RENDER.md).
 
 ## 📄 License
 This project is licensed under the MIT License.
