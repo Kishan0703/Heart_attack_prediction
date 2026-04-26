@@ -1,6 +1,5 @@
 # Cardiac Risk Prediction AI
 
-
 An end-to-end Machine Learning system that classifies cardiac risk levels (**Low**, **Moderate**, **High**) based on multiplex biomarker measurements. The system features a robust FastAPI backend, a comprehensive HTML5 dashboard, and automated model explanation via SHAP.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -108,5 +107,3 @@ The project uses `flake8` for linting and `pytest` for unit/integration testing,
 ## ☁️ Deployment
 For instructions on deploying to Render or other cloud providers, see [DEPLOY_RENDER.md](./DEPLOY_RENDER.md).
 
-## 📄 License
-This project is licensed under the MIT License.
