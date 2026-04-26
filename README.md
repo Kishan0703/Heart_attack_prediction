@@ -106,4 +106,3 @@ The project uses `flake8` for linting and `pytest` for unit/integration testing,
 
 ## ☁️ Deployment
 For instructions on deploying to Render or other cloud providers, see [DEPLOY_RENDER.md](./DEPLOY_RENDER.md).
-
